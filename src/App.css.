@@ -1,0 +1,209 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  font-family: Inter, sans-serif;
+  color: #f5f5fa;
+  background: #10121d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: radial-gradient(ellipse at 50% -15%, #292449, #10121d 55%);
+}
+
+button { font: inherit; }
+
+.app-shell {
+  width: min(100%, 560px);
+  min-height: 100vh;
+  margin: auto;
+  padding: 20px 20px 100px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 0 25px;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #9a78e8;
+  border-radius: 13px;
+  color: #d8c8ff;
+  font-size: 27px;
+  font-weight: 800;
+  background: linear-gradient(145deg,#43306d,#171827);
+}
+
+.brand-copy { display: grid; gap: 3px; }
+.brand-copy strong { font-size: 13px; }
+.brand-copy strong span { color: #b79aff; }
+.brand-copy small {
+  color: #85869b;
+  font-size: 8px;
+  letter-spacing: .16em;
+}
+
+.online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #65d6a2;
+  margin-left: auto;
+}
+
+.hero {
+  padding: 25px 22px 20px;
+  border: 1px solid #514273;
+  border-radius: 20px;
+  background: linear-gradient(125deg,#292344,#191a2b,#182333);
+}
+
+.eyebrow {
+  color: #bba2f2;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .19em;
+}
+
+.hero h1 {
+  font-size: 36px;
+  line-height: 1.02;
+  margin: 13px 0 8px;
+}
+
+.hero h1 span { color: #c4aaff; }
+.hero p { color: #c0bfd0; font-size: 13px; }
+
+.dragon-line {
+  font-size: 8px;
+  color: #9996ae;
+  letter-spacing: .16em;
+}
+
+.dragon-line b { color: #c6a5ff; }
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 28px 2px 13px;
+}
+
+.section-heading h2 { font-size: 22px; }
+.section-heading span {
+  color: #77788e;
+  font-size: 8px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+}
+
+.feature-card {
+  text-align: left;
+  min-height: 132px;
+  position: relative;
+  padding: 16px;
+  border: 1px solid #303247;
+  border-radius: 16px;
+  background: #202236;
+  color: #f5f5fa;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.feature-icon { font-size: 23px; }
+.feature-card strong { font-size: 13px; }
+.feature-card small { color: #9698ae; font-size: 10px; }
+.card-arrow { position: absolute; right: 14px; top: 14px; color: #a88de5; }
+
+.notice {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px solid #38334f;
+  border-radius: 15px;
+  background: #201e30;
+}
+
+.notice-icon { color: #c5a8ff; font-size: 20px; }
+.notice strong { font-size: 11px; }
+.notice p { color: #a4a3b7; font-size: 10px; line-height: 1.5; }
+
+.empty-state {
+  margin-top: 24px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 25px;
+  border: 1px solid #303247;
+  border-radius: 18px;
+  background: #1b1d2b;
+}
+
+.empty-icon { font-size: 37px; }
+.empty-state h2 { font-size: 25px; }
+.empty-state p {
+  color: #a4a5b7;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.coming-soon {
+  color: #b89df2;
+  font-size: 8px;
+  letter-spacing: .18em;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%,560px);
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  padding: 10px 12px 20px;
+  background: #141622f2;
+  border-top: 1px solid #303144;
+}
+
+.nav-item {
+  border: 0;
+  background: transparent;
+  color: #85869c;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  font-size: 9px;
+  padding: 4px;
+}
+
+.nav-icon { font-size: 18px; }
+.nav-item.active { color: #c4a8ff; }
+
+footer {
+  text-align: center;
+  color: #62647a;
+  font-size: 8px;
+  letter-spacing: .15em;
+  margin-top: 25px;
+}
