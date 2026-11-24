@@ -81,7 +81,7 @@ export default async function handler(req, res) {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('username, first_name, last_name, photo_url, display_name, bio, role')
+      .select('telegram_id, username, first_name, last_name, photo_url, display_name, nickname, specialty, bio, role')
       .order('first_name', { ascending: true });
 
     if (error) {
