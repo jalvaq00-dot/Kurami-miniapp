@@ -19,6 +19,13 @@ export default function App() {
   const [playersError, setPlayersError] = useState('');
   const [search, setSearch] = useState('');
 
+  const [editing, setEditing] = useState(false);
+  const [nickname, setNickname] = useState('');
+  const [specialty, setSpecialty] = useState('');
+  const [bio, setBio] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
+
   const tg = window.Telegram?.WebApp;
 
   useEffect(() => {
@@ -48,6 +55,9 @@ export default function App() {
 
         if (!cancelled) {
           setProfile(result.profile);
+          setNickname(result.profile.nickname || '');
+          setSpecialty(result.profile.specialty || '');
+          setBio(result.profile.bio || '');
           setStatus('authenticated');
         }
       } catch (err) {
@@ -106,6 +116,50 @@ export default function App() {
     };
   }, [active, status]);
 
+  async function saveProfile(event) {
+    event.preventDefault();
+    setSaving(true);
+    setSaveMessage('');
+
+    try {
+      const response = await fetch('/api/profile-update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          initData: tg?.initData,
+          nickname,
+          specialty,
+          bio,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'No se pudo guardar el perfil');
+      }
+
+      setProfile(result.profile);
+      setNickname(result.profile.nickname || '');
+      setSpecialty(result.profile.specialty || '');
+      setBio(result.profile.bio || '');
+      setEditing(false);
+      setSaveMessage('Perfil actualizado correctamente.');
+
+      setPlayers((current) =>
+        current.map((player) =>
+          player.telegram_id === result.profile.telegram_id
+            ? { ...player, ...result.profile }
+            : player
+        )
+      );
+    } catch (err) {
+      setSaveMessage(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   const name =
     profile?.display_name ||
     profile?.first_name ||
@@ -115,6 +169,7 @@ export default function App() {
     const term = search.toLowerCase().trim();
 
     const fullName = [
+      player.nickname,
       player.display_name,
       player.first_name,
       player.last_name,
@@ -203,6 +258,13 @@ export default function App() {
 
             <Feature icon="🐉" title="Pokédex"
               desc="Próximamente" onClick={() => {}} />
+
+            <Feature icon="⚙️" title="Mi perfil"
+              desc="Personaliza tu ficha"
+              onClick={() => {
+                setEditing(true);
+                setActive('perfil');
+              }} />
           </div>
 
           <section className="notice">
@@ -213,6 +275,80 @@ export default function App() {
             </div>
           </section>
         </>
+      )}
+
+      {active === 'perfil' && (
+        <section className="profile-editor">
+          <div className="section-heading">
+            <h2>Mi perfil</h2>
+            <span>CONFIGURACIÓN</span>
+          </div>
+
+          <div className="profile-summary">
+            <div className="player-avatar">
+              {profile?.photo_url
+                ? <img src={profile.photo_url} alt="" />
+                : <span>{name.charAt(0).toUpperCase()}</span>}
+            </div>
+            <div>
+              <strong>{name}</strong>
+              <small>
+                {profile?.username ? `@${profile.username}` : 'Miembro Kurami'}
+              </small>
+              <span className="player-role">
+                {profile?.role?.toUpperCase()}
+              </span>
+            </div>
+          </div>
+
+          <form className="profile-form" onSubmit={saveProfile}>
+            <label htmlFor="nickname">Nickname competitivo</label>
+            <input
+              id="nickname"
+              maxLength={40}
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder="Tu nombre de jugador"
+            />
+
+            <label htmlFor="specialty">Especialidad</label>
+            <select
+              id="specialty"
+              value={specialty}
+              onChange={(e) => setSpecialty(e.target.value)}
+            >
+              <option value="">Selecciona tu especialidad</option>
+              <option value="VGC">Pokémon VGC</option>
+              <option value="TCG">Pokémon TCG</option>
+              <option value="Pokémon GO">Pokémon GO</option>
+              <option value="Unite">Pokémon UNITE</option>
+              <option value="Otros">Otros</option>
+            </select>
+
+            <label htmlFor="bio">Biografía</label>
+            <textarea
+              id="bio"
+              maxLength={300}
+              rows={4}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Cuéntanos algo sobre ti..."
+            />
+
+            <small className="character-count">{bio.length}/300 caracteres</small>
+
+            <div className="role-notice">
+              <strong>Rol: {profile?.role}</strong>
+              <p>Los roles solo pueden ser modificados por administradores.</p>
+            </div>
+
+            <button type="submit" disabled={saving}>
+              {saving ? 'Guardando...' : 'Guardar perfil'}
+            </button>
+
+            {saveMessage && <p className="save-message">{saveMessage}</p>}
+          </form>
+        </section>
       )}
 
       {active === 'torneos' && (
@@ -236,71 +372,51 @@ export default function App() {
           />
 
           {playersStatus === 'loading' && (
-            <div className="empty-state">
-              <div className="empty-icon">👥</div>
-              <h2>Cargando jugadores</h2>
-              <p>Consultando los perfiles de Kurami...</p>
-            </div>
+            <EmptyState icon="👥" title="Cargando jugadores"
+              text="Consultando los perfiles de Kurami..." />
           )}
 
           {playersStatus === 'error' && (
-            <div className="empty-state">
-              <div className="empty-icon">⚠️</div>
-              <h2>No se pudo cargar el directorio</h2>
-              <p>{playersError}</p>
-              <button onClick={() => setActive('inicio')}>
-                Volver al inicio
-              </button>
-            </div>
+            <EmptyState icon="⚠️" title="Error al cargar jugadores"
+              text={playersError} />
           )}
 
           {playersStatus === 'success' && filteredPlayers.length === 0 && (
-            <div className="empty-state">
-              <div className="empty-icon">🔎</div>
-              <h2>No hay jugadores</h2>
-              <p>
-                {players.length === 0
-                  ? 'Todavía no hay miembros registrados.'
-                  : 'No encontramos resultados para tu búsqueda.'}
-              </p>
-            </div>
+            <EmptyState icon="🔎" title="No hay jugadores"
+              text={players.length === 0
+                ? 'Todavía no hay miembros registrados.'
+                : 'No encontramos resultados para tu búsqueda.'} />
           )}
 
           {playersStatus === 'success' && filteredPlayers.length > 0 && (
             <div className="players-grid">
               {filteredPlayers.map((player, index) => (
-                <article
-                  className="player-card"
-                  key={`${player.username || player.first_name}-${index}`}
-                >
+                <article className="player-card"
+                  key={player.telegram_id || index}>
                   <div className="player-avatar">
-                    {player.photo_url ? (
-                      <img src={player.photo_url} alt="" />
-                    ) : (
-                      <span>
-                        {(player.display_name || player.first_name || 'K')
-                          .charAt(0).toUpperCase()}
-                      </span>
-                    )}
+                    {player.photo_url
+                      ? <img src={player.photo_url} alt="" />
+                      : <span>
+                          {(player.nickname || player.first_name || 'K')
+                            .charAt(0).toUpperCase()}
+                        </span>}
                   </div>
 
                   <div className="player-info">
                     <strong>
-                      {player.display_name ||
+                      {player.nickname ||
+                        player.display_name ||
                         [player.first_name, player.last_name]
                           .filter(Boolean).join(' ') ||
                         'Jugador Kurami'}
                     </strong>
-
                     <small>
                       {player.username ? `@${player.username}` : 'Miembro Kurami'}
                     </small>
-
+                    {player.specialty && <small>{player.specialty}</small>}
                     <span className={`player-role role-${player.role}`}>
-                      {player.role === 'admin'
-                        ? 'ADMINISTRADOR'
-                        : player.role === 'staff'
-                        ? 'STAFF'
+                      {player.role === 'admin' ? 'ADMINISTRADOR'
+                        : player.role === 'staff' ? 'STAFF'
                         : 'JUGADOR'}
                     </span>
                   </div>
@@ -351,7 +467,7 @@ function EmptyState({ icon, title, text }) {
       <div className="empty-icon">{icon}</div>
       <h2>{title}</h2>
       <p>{text}</p>
-      <span className="coming-soon">MÓDULO EN PREPARACIÓN</span>
+      <span className="coming-soon">KURAMI E-SPORTS</span>
     </section>
   );
 }
