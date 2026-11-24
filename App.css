@@ -315,3 +315,109 @@ footer {
   background: rgba(100,180,120,.15);
   color: #91d4a0;
 }
+
+/* EDITOR DE PERFIL KURAMI */
+
+.profile-editor {
+  margin: 28px 0 100px;
+}
+
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  margin: 18px 0;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 15px;
+}
+
+.profile-summary > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-summary strong {
+  color: white;
+}
+
+.profile-summary small {
+  color: #aaa;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-form label {
+  margin-top: 12px;
+  color: #e3bb55;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.profile-form input,
+.profile-form select,
+.profile-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 10px;
+  background: #171717;
+  color: white;
+  font: inherit;
+}
+
+.profile-form textarea {
+  resize: vertical;
+}
+
+.profile-form button {
+  margin-top: 18px;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: #c69a32;
+  color: #171717;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.profile-form button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.character-count {
+  color: #999;
+  text-align: right;
+}
+
+.role-notice {
+  padding: 14px;
+  margin-top: 15px;
+  border-radius: 10px;
+  background: rgba(198,154,50,.10);
+  border: 1px solid rgba(198,154,50,.25);
+}
+
+.role-notice strong {
+  color: #e3bb55;
+}
+
+.role-notice p,
+.save-message {
+  color: #ccc;
+  font-size: 13px;
+}
+
+.save-message {
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(100,180,120,.12);
+}
