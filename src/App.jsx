@@ -8,6 +8,12 @@ const sections = [
   { id: 'ranking', icon: '📊', label: 'Ranking' },
 ];
 
+const roleLabels = {
+  admin: 'ADMINISTRADOR',
+  staff: 'STAFF',
+  player: 'JUGADOR',
+};
+
 export default function App() {
   const [active, setActive] = useState('inicio');
   const [profile, setProfile] = useState(null);
@@ -26,7 +32,20 @@ export default function App() {
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
 
+  // Estado del panel de administración.
+  const [adminMembers, setAdminMembers] = useState([]);
+  const [adminStatus, setAdminStatus] = useState('idle');
+  const [adminError, setAdminError] = useState('');
+  const [adminMessage, setAdminMessage] = useState('');
+  const [adminSearch, setAdminSearch] = useState('');
+  const [adminSavingId, setAdminSavingId] = useState(null);
+
   const tg = window.Telegram?.WebApp;
+  const isAdmin = profile?.role === 'admin';
+
+  const navigation = isAdmin
+    ? [...sections, { id: 'admin', icon: '🛡️', label: 'Admin' }]
+    : sections;
 
   useEffect(() => {
     let cancelled = false;
@@ -75,6 +94,7 @@ export default function App() {
     };
   }, []);
 
+  // Cargar el directorio de jugadores.
   useEffect(() => {
     if (active !== 'jugadores' || status !== 'authenticated') return;
 
@@ -115,6 +135,52 @@ export default function App() {
       cancelled = true;
     };
   }, [active, status]);
+
+  // Cargar el panel de administración.
+  useEffect(() => {
+    if (active !== 'admin' || status !== 'authenticated' || !isAdmin) return;
+
+    let cancelled = false;
+
+    async function loadAdminMembers() {
+      setAdminStatus('loading');
+      setAdminError('');
+      setAdminMessage('');
+
+      try {
+        const response = await fetch('/api/admin-users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            initData: tg?.initData,
+            action: 'list',
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'No se pudieron cargar los miembros');
+        }
+
+        if (!cancelled) {
+          setAdminMembers(result.players || []);
+          setAdminStatus('success');
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setAdminError(err.message);
+          setAdminStatus('error');
+        }
+      }
+    }
+
+    loadAdminMembers();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [active, status, profile?.role]);
 
   async function saveProfile(event) {
     event.preventDefault();
@@ -160,6 +226,59 @@ export default function App() {
     }
   }
 
+  // Cambiar el rol de un miembro desde el servidor.
+  async function changeMemberRole(member, newRole) {
+    if (!isAdmin || !member.telegram_id || !newRole) return;
+    if (member.role === newRole) return;
+
+    setAdminSavingId(member.telegram_id);
+    setAdminMessage('');
+    setAdminError('');
+
+    try {
+      const response = await fetch('/api/admin-users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          initData: tg?.initData,
+          action: 'set_role',
+          targetTelegramId: Number(member.telegram_id),
+          role: newRole,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'No se pudo cambiar el rol');
+      }
+
+      setAdminMembers((current) =>
+        current.map((item) =>
+          item.telegram_id === member.telegram_id
+            ? { ...item, role: result.member.role }
+            : item
+        )
+      );
+
+      setPlayers((current) =>
+        current.map((item) =>
+          item.telegram_id === member.telegram_id
+            ? { ...item, role: result.member.role }
+            : item
+        )
+      );
+
+      setAdminMessage(
+        `Rol actualizado correctamente para ${member.nickname || member.first_name || 'el miembro'}.`
+      );
+    } catch (err) {
+      setAdminError(err.message);
+    } finally {
+      setAdminSavingId(null);
+    }
+  }
+
   const name =
     profile?.display_name ||
     profile?.first_name ||
@@ -174,6 +293,22 @@ export default function App() {
       player.first_name,
       player.last_name,
       player.username,
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    return fullName.includes(term);
+  });
+
+  const filteredAdminMembers = adminMembers.filter((member) => {
+    const term = adminSearch.toLowerCase().trim();
+
+    const fullName = [
+      member.nickname,
+      member.display_name,
+      member.first_name,
+      member.last_name,
+      member.username,
+      member.specialty,
+      member.role,
     ].filter(Boolean).join(' ').toLowerCase();
 
     return fullName.includes(term);
@@ -265,6 +400,12 @@ export default function App() {
                 setEditing(true);
                 setActive('perfil');
               }} />
+
+            {isAdmin && (
+              <Feature icon="🛡️" title="Administración"
+                desc="Gestionar miembros y roles"
+                onClick={() => setActive('admin')} />
+            )}
           </div>
 
           <section className="notice">
@@ -415,9 +556,7 @@ export default function App() {
                     </small>
                     {player.specialty && <small>{player.specialty}</small>}
                     <span className={`player-role role-${player.role}`}>
-                      {player.role === 'admin' ? 'ADMINISTRADOR'
-                        : player.role === 'staff' ? 'STAFF'
-                        : 'JUGADOR'}
+                      {roleLabels[player.role] || 'JUGADOR'}
                     </span>
                   </div>
                 </article>
@@ -432,8 +571,134 @@ export default function App() {
           text="Aquí mostraremos clasificaciones y resultados." />
       )}
 
+      {active === 'admin' && (
+        <section className="players-section">
+          <div className="section-heading">
+            <h2>Administración</h2>
+            <span>PANEL ADMIN</span>
+          </div>
+
+          {!isAdmin && (
+            <EmptyState icon="🔒" title="Acceso restringido"
+              text="No tienes permisos para acceder a esta sección." />
+          )}
+
+          {isAdmin && (
+            <>
+              <section className="notice">
+                <div>
+                  <strong>Gestión de miembros Kurami</strong>
+                  <p>
+                    Puedes consultar los miembros y modificar sus roles.
+                    Los cambios se verifican en el servidor.
+                  </p>
+                </div>
+              </section>
+
+              <div className="section-heading">
+                <h2>Miembros registrados</h2>
+                <span>{adminMembers.length} MIEMBROS</span>
+              </div>
+
+              <input
+                className="player-search"
+                type="search"
+                placeholder="Buscar miembro..."
+                value={adminSearch}
+                onChange={(event) => setAdminSearch(event.target.value)}
+              />
+
+              {adminStatus === 'loading' && (
+                <EmptyState icon="⏳" title="Cargando miembros"
+                  text="Consultando la base de datos de Kurami..." />
+              )}
+
+              {adminStatus === 'error' && (
+                <EmptyState icon="⚠️" title="No se pudo cargar el panel"
+                  text={adminError} />
+              )}
+
+              {adminStatus === 'success' && filteredAdminMembers.length === 0 && (
+                <EmptyState icon="🔎" title="Sin resultados"
+                  text="No hay miembros que coincidan con la búsqueda." />
+              )}
+
+              {adminStatus === 'success' && filteredAdminMembers.length > 0 && (
+                <div className="players-grid">
+                  {filteredAdminMembers.map((member) => (
+                    <article className="player-card" key={member.telegram_id}>
+                      <div className="player-avatar">
+                        {member.photo_url
+                          ? <img src={member.photo_url} alt="" />
+                          : <span>
+                              {(member.nickname || member.first_name || 'K')
+                                .charAt(0).toUpperCase()}
+                            </span>}
+                      </div>
+
+                      <div className="player-info">
+                        <strong>
+                          {member.nickname ||
+                            member.display_name ||
+                            [member.first_name, member.last_name]
+                              .filter(Boolean).join(' ') ||
+                            'Miembro Kurami'}
+                        </strong>
+
+                        <small>
+                          {member.username
+                            ? `@${member.username}`
+                            : 'Miembro Kurami'}
+                        </small>
+
+                        {member.specialty && <small>{member.specialty}</small>}
+
+                        <span className={`player-role role-${member.role}`}>
+                          {roleLabels[member.role] || member.role}
+                        </span>
+
+                        {member.telegram_id === profile?.telegram_id ? (
+                          <small>Tu cuenta · Administrador actual</small>
+                        ) : (
+                          <label className="admin-role-control">
+                            Cambiar rol
+                            <select
+                              value={member.role}
+                              disabled={adminSavingId === member.telegram_id}
+                              onChange={(event) =>
+                                changeMemberRole(member, event.target.value)
+                              }
+                            >
+                              <option value="player">Jugador</option>
+                              <option value="staff">Staff</option>
+                              <option value="admin">Administrador</option>
+                            </select>
+                          </label>
+                        )}
+
+                        {adminSavingId === member.telegram_id && (
+                          <small>Actualizando rol...</small>
+                        )}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+
+              {adminMessage && (
+                <p className="save-message">{adminMessage}</p>
+              )}
+
+              {adminError && adminStatus === 'success' && (
+                <p className="save-message">{adminError}</p>
+              )}
+            </>
+          )}
+        </section>
+      )}
+
       <nav className="bottom-nav">
-        {sections.map(item => (
+        {navigation.map(item => (
           <button
             key={item.id}
             className={active === item.id ? 'nav-item active' : 'nav-item'}
