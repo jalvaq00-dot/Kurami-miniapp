@@ -207,3 +207,111 @@ footer {
   letter-spacing: .15em;
   margin-top: 25px;
 }
+
+/* DIRECTORIO DE JUGADORES */
+
+.players-section {
+  margin: 28px 0 100px;
+}
+
+.player-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px 17px;
+  margin: 12px 0 20px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 12px;
+  background: rgba(255,255,255,.05);
+  color: white;
+  font-size: 15px;
+  outline: none;
+}
+
+.player-search:focus {
+  border-color: #d5a52c;
+}
+
+.player-search::placeholder {
+  color: #999;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 15px;
+  background: rgba(255,255,255,.045);
+}
+
+.player-avatar {
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #49320d, #c18b20);
+  color: white;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.player-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.player-info strong {
+  color: white;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.player-info small {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.player-role {
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,.09);
+  color: #ddd;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .7px;
+}
+
+.role-admin {
+  background: rgba(220,165,40,.18);
+  color: #e9bd54;
+}
+
+.role-staff {
+  background: rgba(80,150,220,.18);
+  color: #80bdf0;
+}
+
+.role-player {
+  background: rgba(100,180,120,.15);
+  color: #91d4a0;
+}
