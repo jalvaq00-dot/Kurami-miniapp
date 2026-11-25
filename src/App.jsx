@@ -792,6 +792,100 @@ const adminStats = {
     )}
   </section>
 )}
+      {selectedMember && (
+  <div className="admin-modal-overlay">
+    <section className="admin-modal">
+
+      <button
+        type="button"
+        className="admin-modal-close"
+        onClick={() => setSelectedMember(null)}
+      >
+        ✕
+      </button>
+
+      <div className="eyebrow">KURAMI E-SPORTS · MEMBER PROFILE</div>
+
+      <div className="admin-modal-profile">
+        <div className="player-avatar">
+          {selectedMember.photo_url ? (
+            <img src={selectedMember.photo_url} alt="" />
+          ) : (
+            <span>
+              {(selectedMember.nickname ||
+                selectedMember.first_name ||
+                'K').charAt(0).toUpperCase()}
+            </span>
+          )}
+        </div>
+
+        <h2>
+          {selectedMember.nickname ||
+            selectedMember.display_name ||
+            [selectedMember.first_name, selectedMember.last_name]
+              .filter(Boolean).join(' ') ||
+            'Miembro Kurami'}
+        </h2>
+
+        <span className={`player-role role-${selectedMember.role}`}>
+          {roleLabels[selectedMember.role] || selectedMember.role}
+        </span>
+      </div>
+
+      <div className="admin-modal-details">
+
+        <div>
+          <small>USUARIO DE TELEGRAM</small>
+          <strong>
+            {selectedMember.username
+              ? `@${selectedMember.username}`
+              : 'No disponible'}
+          </strong>
+        </div>
+
+        <div>
+          <small>NOMBRE</small>
+          <strong>
+            {[selectedMember.first_name, selectedMember.last_name]
+              .filter(Boolean).join(' ') || 'No disponible'}
+          </strong>
+        </div>
+
+        <div>
+          <small>ESPECIALIDAD</small>
+          <strong>{selectedMember.specialty || 'Sin especificar'}</strong>
+        </div>
+
+        <div>
+          <small>FECHA DE REGISTRO</small>
+          <strong>
+            {selectedMember.created_at
+              ? new Date(selectedMember.created_at).toLocaleDateString(
+                  'es-ES',
+                  { day: '2-digit', month: 'long', year: 'numeric' }
+                )
+              : 'No disponible'}
+          </strong>
+        </div>
+
+        <div className="admin-modal-bio">
+          <small>BIOGRAFÍA</small>
+          <p>{selectedMember.bio || 'Este miembro todavía no tiene biografía.'}</p>
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        className="admin-detail-button"
+        onClick={() => setSelectedMember(null)}
+      >
+        Cerrar ficha
+      </button>
+
+    </section>
+  </div>
+)}
 
       <nav className="bottom-nav">
         {navigation.map(item => (
