@@ -963,7 +963,10 @@ const adminStats = {
           </button>
         </div>
       )}
-
+            {!editingMember && memberSaveMessage && (
+        <p className="save-message">{memberSaveMessage}</p>
+      )}
+      {!editingMember && (
       <div className="admin-modal-details">
 
         <div>
@@ -1004,6 +1007,7 @@ const adminStats = {
           <small>BIOGRAFÍA</small>
           <p>{selectedMember.bio || 'Este miembro todavía no tiene biografía.'}</p>
         </div>
+              )}
 
       </div>
 
