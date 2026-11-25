@@ -40,6 +40,7 @@ export default function App() {
   const [adminSearch, setAdminSearch] = useState('');
   const [adminRoleFilter, setAdminRoleFilter] = useState('all');
   const [adminSavingId, setAdminSavingId] = useState(null);
+  const [selectedMember, setSelectedMember] = useState(null);
 
   const tg = window.Telegram?.WebApp;
   const isAdmin = profile?.role === 'admin';
