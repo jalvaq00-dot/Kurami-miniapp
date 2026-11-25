@@ -764,20 +764,21 @@ const adminStats = {
                       </label>
                     )}
 
-                    {adminSavingId === member.telegram_id && (
+                                        {adminSavingId === member.telegram_id && (
                       <small>Actualizando permisos...</small>
                     )}
+
+                    <button
+                      type="button"
+                      className="admin-detail-button"
+                      onClick={() => setSelectedMember(member)}
+                    >
+                      Ver ficha completa
+                    </button>
                   </div>
                 </article>
               );
-            })}
-            <button
-  type="button"
-  className="admin-detail-button"
-  onClick={() => setSelectedMember(member)}
->
-  Ver ficha completa
-</button>
+                       })}
           </div>
         )}
 
