@@ -37,6 +37,7 @@ export default function App() {
   const [adminStatus, setAdminStatus] = useState('idle');
   const [adminError, setAdminError] = useState('');
   const [adminMessage, setAdminMessage] = useState('');
+  const [adminSearch, setAdminSearch] = useState('');
   const [adminRoleFilter, setAdminRoleFilter] = useState('all');
   const [adminSavingId, setAdminSavingId] = useState(null);
 
