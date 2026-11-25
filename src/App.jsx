@@ -771,6 +771,13 @@ const adminStats = {
                 </article>
               );
             })}
+            <button
+  type="button"
+  className="admin-detail-button"
+  onClick={() => setSelectedMember(member)}
+>
+  Ver ficha completa
+</button>
           </div>
         )}
 
