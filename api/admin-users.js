@@ -94,7 +94,7 @@ export default async function handler(req, res) {
     if (action === 'list') {
       const { data, error } = await supabase
         .from('profiles')
-        .select('telegram_id, username, first_name, last_name, photo_url, display_name, nickname, specialty, bio, role')
+        .select('telegram_id, username, first_name, last_name, photo_url, display_name, nickname, specialty, bio, role, created_at')
         .order('first_name', { ascending: true });
 
       if (error) {
