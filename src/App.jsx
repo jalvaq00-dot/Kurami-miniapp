@@ -41,6 +41,12 @@ export default function App() {
   const [adminRoleFilter, setAdminRoleFilter] = useState('all');
   const [adminSavingId, setAdminSavingId] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
+  const [editingMember, setEditingMember] = useState(false);
+const [memberNickname, setMemberNickname] = useState('');
+const [memberSpecialty, setMemberSpecialty] = useState('');
+const [memberBio, setMemberBio] = useState('');
+const [memberSaving, setMemberSaving] = useState(false);
+const [memberSaveMessage, setMemberSaveMessage] = useState('');
 
   const tg = window.Telegram?.WebApp;
   const isAdmin = profile?.role === 'admin';
@@ -278,6 +284,65 @@ export default function App() {
       setAdminError(err.message);
     } finally {
       setAdminSavingId(null);
+    }
+  }
+    function startEditingMember(member) {
+    setMemberNickname(member.nickname || '');
+    setMemberSpecialty(member.specialty || '');
+    setMemberBio(member.bio || '');
+    setMemberSaveMessage('');
+    setEditingMember(true);
+  }
+
+  async function saveMemberProfile() {
+    if (!isAdmin || !selectedMember || memberSaving) return;
+
+    setMemberSaving(true);
+    setMemberSaveMessage('');
+
+    try {
+      const response = await fetch('/api/admin-users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          initData: tg?.initData,
+          action: 'update_member_profile',
+          targetTelegramId: Number(selectedMember.telegram_id),
+          nickname: memberNickname,
+          specialty: memberSpecialty,
+          bio: memberBio
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'No se pudo actualizar el perfil');
+      }
+
+      setAdminMembers(current =>
+        current.map(member =>
+          String(member.telegram_id) === String(result.member.telegram_id)
+            ? { ...member, ...result.member }
+            : member
+        )
+      );
+
+      setPlayers(current =>
+        current.map(member =>
+          String(member.telegram_id) === String(result.member.telegram_id)
+            ? { ...member, ...result.member }
+            : member
+        )
+      );
+
+      setSelectedMember(result.member);
+      setEditingMember(false);
+      setMemberSaveMessage('Perfil actualizado correctamente.');
+    } catch (error) {
+      setMemberSaveMessage(error.message);
+    } finally {
+      setMemberSaving(false);
     }
   }
 
@@ -832,6 +897,72 @@ const adminStats = {
           {roleLabels[selectedMember.role] || selectedMember.role}
         </span>
       </div>
+            {editingMember && (
+        <div className="admin-modal-details admin-member-editor">
+          <div>
+            <small>NICKNAME COMPETITIVO</small>
+            <input
+              type="text"
+              maxLength={40}
+              value={memberNickname}
+              onChange={(event) => setMemberNickname(event.target.value)}
+              placeholder="Nickname del jugador"
+            />
+          </div>
+
+          <div>
+            <small>ESPECIALIDAD</small>
+            <select
+              value={memberSpecialty}
+              onChange={(event) => setMemberSpecialty(event.target.value)}
+            >
+              <option value="">Sin especificar</option>
+              <option value="VGC">Pokémon VGC</option>
+              <option value="TCG">Pokémon TCG</option>
+              <option value="Pokémon GO">Pokémon GO</option>
+              <option value="Unite">Pokémon UNITE</option>
+              <option value="Otros">Otros</option>
+            </select>
+          </div>
+
+          <div>
+            <small>BIOGRAFÍA</small>
+            <textarea
+              maxLength={300}
+              rows={4}
+              value={memberBio}
+              onChange={(event) => setMemberBio(event.target.value)}
+              placeholder="Biografía del miembro..."
+            />
+            <small>{memberBio.length}/300 caracteres</small>
+          </div>
+
+          {memberSaveMessage && (
+            <p className="save-message">{memberSaveMessage}</p>
+          )}
+
+          <button
+            type="button"
+            className="admin-detail-button"
+            disabled={memberSaving}
+            onClick={saveMemberProfile}
+          >
+            {memberSaving ? 'Guardando...' : 'Guardar cambios'}
+          </button>
+
+          <button
+            type="button"
+            className="admin-detail-button"
+            disabled={memberSaving}
+            onClick={() => {
+              setEditingMember(false);
+              setMemberSaveMessage('');
+            }}
+          >
+            Cancelar edición
+          </button>
+        </div>
+      )}
 
       <div className="admin-modal-details">
 
@@ -876,10 +1007,24 @@ const adminStats = {
 
       </div>
 
+            {!editingMember && (
+        <button
+          type="button"
+          className="admin-detail-button"
+          onClick={() => startEditingMember(selectedMember)}
+        >
+          ✎ Editar perfil
+        </button>
+      )}
+
       <button
         type="button"
         className="admin-detail-button"
-        onClick={() => setSelectedMember(null)}
+        onClick={() => {
+          setEditingMember(false);
+          setSelectedMember(null);
+          setMemberSaveMessage('');
+        }}
       >
         Cerrar ficha
       </button>
