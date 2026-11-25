@@ -60,8 +60,15 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Server configuration incomplete' });
     }
 
-    const { initData, action, targetTelegramId, role } = req.body || {};
-
+    const {
+  initData,
+  action,
+  targetTelegramId,
+  role,
+  nickname,
+  specialty,
+  bio
+} = req.body || {};
     if (typeof initData !== 'string' || initData.length > 10000) {
       return res.status(400).json({ error: 'Invalid Telegram data' });
     }
@@ -160,6 +167,61 @@ export default async function handler(req, res) {
       if (updateError) {
         console.error('Role update failed:', updateError.message);
         return res.status(500).json({ error: 'Could not update role' });
+      }
+
+      return res.status(200).json({
+        success: true,
+        member: updated
+      });
+    }
+        // Editar el perfil de un miembro desde administración.
+    if (action === 'update_member_profile') {
+      const targetId = Number(targetTelegramId);
+
+      const validSpecialties = [
+        '',
+        'VGC',
+        'TCG',
+        'Pokémon GO',
+        'Unite',
+        'Otros'
+      ];
+
+      if (!Number.isSafeInteger(targetId) || targetId <= 0) {
+        return res.status(400).json({ error: 'Invalid member' });
+      }
+
+      if (
+        typeof nickname !== 'string' ||
+        typeof specialty !== 'string' ||
+        typeof bio !== 'string'
+      ) {
+        return res.status(400).json({ error: 'Invalid profile data' });
+      }
+
+      if (
+        nickname.length > 40 ||
+        bio.length > 300 ||
+        !validSpecialties.includes(specialty)
+      ) {
+        return res.status(400).json({ error: 'Profile data exceeds allowed limits' });
+      }
+
+      const { data: updated, error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          nickname: nickname.trim(),
+          specialty,
+          bio: bio.trim(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('telegram_id', targetId)
+        .select('telegram_id, username, first_name, last_name, photo_url, display_name, nickname, specialty, bio, role, created_at')
+        .single();
+
+      if (updateError || !updated) {
+        console.error('Admin profile update failed:', updateError?.message);
+        return res.status(500).json({ error: 'Could not update member profile' });
       }
 
       return res.status(200).json({
