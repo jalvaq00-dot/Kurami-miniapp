@@ -760,3 +760,134 @@ footer {
   min-height: 35px;
   padding: 7px 10px;
 }
+
+/* =================================
+   KURAMI - FICHAS DE MIEMBROS
+================================= */
+
+.admin-detail-button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 14px;
+  border: 1px solid #7550b9;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #39245e, #241936);
+  color: #e9dcff;
+  font-family: var(--font-main);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.admin-detail-button:hover {
+  background: #51347e;
+  border-color: #a77aff;
+}
+
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(5, 5, 12, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+.admin-modal {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 28px 22px;
+  border: 1px solid #59417e;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #211b32, #11111d);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.55);
+}
+
+.admin-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #514273;
+  border-radius: 50%;
+  background: #302442;
+  color: #fff;
+  cursor: pointer;
+}
+
+.admin-modal-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 25px 0;
+  text-align: center;
+}
+
+.admin-modal-profile h2 {
+  margin: 5px 0 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 27px;
+  text-transform: uppercase;
+}
+
+.admin-modal-profile .player-avatar {
+  width: 90px;
+  height: 90px;
+  font-size: 30px;
+}
+
+.admin-modal-details {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-modal-details > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 13px;
+  border: 1px solid rgba(150, 120, 190, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.admin-modal-details small {
+  color: #ad91d4;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.admin-modal-details strong {
+  color: #f1edf8;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.admin-modal-bio p {
+  margin: 2px 0 0;
+  color: #d0c8dc;
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.admin-modal > .admin-detail-button {
+  margin-top: 18px;
+}
+
+@media (max-width: 480px) {
+  .admin-modal {
+    padding: 24px 16px;
+  }
+}
