@@ -967,49 +967,51 @@ const adminStats = {
         <p className="save-message">{memberSaveMessage}</p>
       )}
       {!editingMember && (
-      <div className="admin-modal-details">
+        <div className="admin-modal-details">
 
-        <div>
-          <small>USUARIO DE TELEGRAM</small>
-          <strong>
-            {selectedMember.username
-              ? `@${selectedMember.username}`
-              : 'No disponible'}
-          </strong>
+          <div>
+            <small>USUARIO DE TELEGRAM</small>
+            <strong>
+              {selectedMember.username
+                ? `@${selectedMember.username}`
+                : 'No disponible'}
+            </strong>
+          </div>
+
+          <div>
+            <small>NOMBRE</small>
+            <strong>
+              {[selectedMember.first_name, selectedMember.last_name]
+                .filter(Boolean).join(' ') || 'No disponible'}
+            </strong>
+          </div>
+
+          <div>
+            <small>ESPECIALIDAD</small>
+            <strong>{selectedMember.specialty || 'Sin especificar'}</strong>
+          </div>
+
+          <div>
+            <small>FECHA DE REGISTRO</small>
+            <strong>
+              {selectedMember.created_at
+                ? new Date(selectedMember.created_at).toLocaleDateString(
+                    'es-ES',
+                    { day: '2-digit', month: 'long', year: 'numeric' }
+                  )
+                : 'No disponible'}
+            </strong>
+          </div>
+
+          <div className="admin-modal-bio">
+            <small>BIOGRAFÍA</small>
+            <p>
+              {selectedMember.bio || 'Este miembro todavía no tiene biografía.'}
+            </p>
+          </div>
+
         </div>
-
-        <div>
-          <small>NOMBRE</small>
-          <strong>
-            {[selectedMember.first_name, selectedMember.last_name]
-              .filter(Boolean).join(' ') || 'No disponible'}
-          </strong>
-        </div>
-
-        <div>
-          <small>ESPECIALIDAD</small>
-          <strong>{selectedMember.specialty || 'Sin especificar'}</strong>
-        </div>
-
-        <div>
-          <small>FECHA DE REGISTRO</small>
-          <strong>
-            {selectedMember.created_at
-              ? new Date(selectedMember.created_at).toLocaleDateString(
-                  'es-ES',
-                  { day: '2-digit', month: 'long', year: 'numeric' }
-                )
-              : 'No disponible'}
-          </strong>
-        </div>
-
-        <div className="admin-modal-bio">
-          <small>BIOGRAFÍA</small>
-          <p>{selectedMember.bio || 'Este miembro todavía no tiene biografía.'}</p>
-        </div>
-              )}
-
-      </div>
+      )}
 
             {!editingMember && (
         <button
