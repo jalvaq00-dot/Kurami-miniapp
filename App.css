@@ -891,3 +891,52 @@ footer {
     padding: 24px 16px;
   }
 }
+/* EDITOR DE PERFILES DE ADMINISTRACIÓN */
+
+.admin-member-editor {
+  margin-top: 16px;
+}
+
+.admin-member-editor input,
+.admin-member-editor select,
+.admin-member-editor textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #59417e;
+  border-radius: 9px;
+  background: #171321;
+  color: #f1edf8;
+  font-family: var(--font-main);
+  font-size: 13px;
+  outline: none;
+}
+
+.admin-member-editor input:focus,
+.admin-member-editor select:focus,
+.admin-member-editor textarea:focus {
+  border-color: #a77aff;
+  box-shadow: 0 0 0 2px rgba(167, 122, 255, 0.15);
+}
+
+.admin-member-editor textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.admin-member-editor select {
+  cursor: pointer;
+}
+
+.admin-member-editor button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.admin-member-editor .save-message {
+  margin: 4px 0;
+  color: #a9e7b5;
+  font-size: 12px;
+  line-height: 1.5;
+}
