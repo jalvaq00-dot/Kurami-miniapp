@@ -105,15 +105,20 @@ export default async function handler(req, res) {
       .eq('telegram_id', user.id)
       .single();
 
-    if (
-      operatorError ||
-      !operator ||
-      !['admin', 'staff'].includes(operator.role)
-    ) {
-      return res.status(403).json({
-        error: 'Administrator or staff access required'
-      });
-    }
+    if (operatorError || !operator) {
+  return res.status(403).json({
+    error: 'Authenticated profile required'
+  });
+}
+
+if (
+  action !== 'list_tournaments' &&
+  !['admin', 'staff'].includes(operator.role)
+) {
+  return res.status(403).json({
+    error: 'Administrator or staff access required'
+  });
+}
 
     // CREAR TORNEO
     if (action === 'create_tournament') {
