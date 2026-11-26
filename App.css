@@ -940,3 +940,87 @@ footer {
   font-size: 12px;
   line-height: 1.5;
 }
+/* =================================
+   KURAMI - PUBLIC PLAYER PROFILE
+================================= */
+
+.public-player-modal {
+  border: 1px solid rgba(167, 122, 255, 0.65);
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(126, 76, 190, 0.22),
+      transparent 45%
+    ),
+    linear-gradient(160deg, #211b32, #10101b);
+}
+
+.public-player-modal .eyebrow {
+  color: #b995ff;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.public-player-modal .admin-modal-profile {
+  padding: 30px 0;
+}
+
+.public-player-modal .player-avatar {
+  width: 108px;
+  height: 108px;
+  border: 3px solid #a77aff;
+  border-radius: 50%;
+  box-shadow: 0 0 25px rgba(167, 122, 255, 0.3);
+  overflow: hidden;
+}
+
+.public-player-modal .admin-modal-profile h2 {
+  font-size: 30px;
+  letter-spacing: 1px;
+}
+
+.public-player-modal .player-role {
+  margin-top: 4px;
+}
+
+.public-player-modal .admin-modal-details {
+  gap: 12px;
+}
+
+.public-player-modal .admin-modal-details > div {
+  border-color: rgba(167, 122, 255, 0.25);
+  background: rgba(167, 122, 255, 0.045);
+}
+
+.public-player-modal .admin-modal-bio {
+  border-left: 3px solid #a77aff;
+}
+
+.public-player-modal > .admin-detail-button {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #a77aff;
+  border-radius: 10px;
+  background: linear-gradient(110deg, #6840a5, #39245f);
+  color: white;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.public-player-modal > .admin-detail-button:hover {
+  filter: brightness(1.15);
+}
+
+@media (max-width: 480px) {
+  .public-player-modal .admin-modal-profile h2 {
+    font-size: 25px;
+  }
+
+  .public-player-modal .player-avatar {
+    width: 96px;
+    height: 96px;
+  }
+}
