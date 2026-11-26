@@ -112,6 +112,8 @@ const [tournamentsError, setTournamentsError] = useState('');
 const [selectedTournament, setSelectedTournament] = useState(null);
 const [tournamentRegistrations, setTournamentRegistrations] = useState([]);
 const [registrationsStatus, setRegistrationsStatus] = useState('idle');
+  const [registrationActionLoading, setRegistrationActionLoading] = useState('');
+const [registrationError, setRegistrationError] = useState('');
   // Formulario de creación de torneos
 const [showTournamentForm, setShowTournamentForm] = useState(false);
 const [tournamentForm, setTournamentForm] = useState({
