@@ -868,7 +868,7 @@ const adminStats = {
 )}
       {selectedMember && (
   <div className="admin-modal-overlay">
-    <section className="admin-modal">
+    <section className="admin-modal public-player-modal">
 
       <button
         type="button"
