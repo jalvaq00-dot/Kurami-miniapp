@@ -112,6 +112,19 @@ const [tournamentsError, setTournamentsError] = useState('');
 const [selectedTournament, setSelectedTournament] = useState(null);
 const [tournamentRegistrations, setTournamentRegistrations] = useState([]);
 const [registrationsStatus, setRegistrationsStatus] = useState('idle');
+  // Formulario de creación de torneos
+const [showTournamentForm, setShowTournamentForm] = useState(false);
+const [tournamentForm, setTournamentForm] = useState({
+  name: '',
+  game: 'Pokémon Champions',
+  format: 'VGC',
+  starts_at: '',
+  registration_opens_at: '',
+  registration_closes_at: '',
+  max_participants: ''
+});
+const [creatingTournament, setCreatingTournament] = useState(false);
+const [createTournamentError, setCreateTournamentError] = useState('');
 
   // Cargar el directorio de jugadores.
   useEffect(() => {
