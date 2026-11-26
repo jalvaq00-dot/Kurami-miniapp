@@ -640,6 +640,13 @@ const adminStats = {
                       {roleLabels[player.role] || 'JUGADOR'}
                     </span>
                   </div>
+                                    <button
+                    type="button"
+                    className="admin-detail-button"
+                    onClick={() => setSelectedPlayer(player)}
+                  >
+                    Ver perfil completo
+                  </button>
                 </article>
               ))}
             </div>
