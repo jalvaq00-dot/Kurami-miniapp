@@ -1166,3 +1166,212 @@ footer {
     font-size: 18px;
   }
 }
+
+/* =====================================
+   KURAMI - TOURNAMENT CENTER
+===================================== */
+
+.tournaments-section {
+  padding: 18px 0 32px;
+}
+
+.tournaments-section > .eyebrow {
+  color: #b995ff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.tournaments-section .section-heading {
+  margin: 18px 0 25px;
+}
+
+.tournaments-section .section-heading h2 {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 30px;
+  letter-spacing: 1px;
+}
+
+.tournaments-section .section-heading p {
+  color: #aaa0ba;
+  font-size: 12px;
+}
+
+.tournament-admin-panel {
+  margin-bottom: 28px;
+}
+
+.tournament-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid rgba(167, 122, 255, 0.3);
+  border-radius: 15px;
+  background: linear-gradient(
+    145deg,
+    rgba(47, 35, 69, 0.95),
+    rgba(20, 19, 31, 0.98)
+  );
+}
+
+.tournament-form h3 {
+  margin: 0 0 8px;
+  color: #d2b7ff;
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+
+.tournament-form label {
+  color: #c4b7d7;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tournament-form input,
+.tournament-form select {
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 12px;
+  border: 1px solid rgba(167, 122, 255, 0.25);
+  border-radius: 8px;
+  outline: none;
+  background: #171421;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.tournament-form input:focus,
+.tournament-form select:focus {
+  border-color: #a77aff;
+}
+
+.tournament-form input::placeholder {
+  color: #756c82;
+}
+
+.tournament-form input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+.primary-button,
+.secondary-button {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.primary-button {
+  background: linear-gradient(110deg, #7950b8, #a77aff);
+  color: #fff;
+}
+
+.primary-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  margin-top: 14px;
+  border: 1px solid rgba(167, 122, 255, 0.4);
+  background: rgba(121, 80, 184, 0.13);
+  color: #d2b7ff;
+}
+
+.tournament-list-heading {
+  margin-bottom: 14px;
+}
+
+.tournament-list-heading h3 {
+  color: #c4b7d7;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.tournament-list {
+  display: grid;
+  gap: 13px;
+}
+
+.tournament-card {
+  padding: 16px;
+  border: 1px solid rgba(167, 122, 255, 0.25);
+  border-radius: 13px;
+  background: linear-gradient(
+    120deg,
+    rgba(47, 35, 69, 0.95),
+    rgba(20, 19, 31, 0.98)
+  );
+}
+
+.tournament-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  color: #b995ff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.tournament-status {
+  color: #8fe0b0;
+  font-size: 9px;
+}
+
+.tournament-card h3 {
+  margin: 13px 0 5px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 21px;
+}
+
+.tournament-card > p {
+  color: #aaa0ba;
+  font-size: 11px;
+}
+
+.tournament-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 15px;
+  color: #b9aec9;
+  font-size: 10px;
+}
+
+.tournament-message,
+.tournament-error {
+  padding: 20px 12px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.tournament-message {
+  color: #b9aec9;
+}
+
+.tournament-error {
+  color: #ff8585;
+}
+
+@media (max-width: 380px) {
+  .tournament-form {
+    padding: 13px;
+  }
+
+  .tournament-card {
+    padding: 13px;
+  }
+}
