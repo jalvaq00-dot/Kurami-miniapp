@@ -41,6 +41,7 @@ export default function App() {
   const [adminRoleFilter, setAdminRoleFilter] = useState('all');
   const [adminSavingId, setAdminSavingId] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [editingMember, setEditingMember] = useState(false);
 const [memberNickname, setMemberNickname] = useState('');
 const [memberSpecialty, setMemberSpecialty] = useState('');
