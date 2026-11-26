@@ -1165,15 +1165,45 @@ async function loadTournamentRegistrations(tournamentId) {
                   </div>
                 </div>
 
-                <span className={`registration-status status-${registration.status}`}>
-                  {registration.status === 'pending'
-                    ? 'PENDIENTE'
-                    : registration.status === 'approved'
-                      ? 'APROBADA'
-                      : registration.status === 'rejected'
-                        ? 'RECHAZADA'
-                        : 'RETIRADA'}
-                </span>
+                <div className="registration-actions">
+
+  <span className={`registration-status status-${registration.status}`}>
+    {registration.status === 'pending'
+      ? 'PENDIENTE'
+      : registration.status === 'approved'
+        ? 'APROBADA'
+        : registration.status === 'rejected'
+          ? 'RECHAZADA'
+          : 'RETIRADA'}
+  </span>
+
+  {registration.status === 'pending' && (
+    <div className="registration-buttons">
+
+      <button
+        type="button"
+        className="registration-approve"
+        disabled={registrationActionLoading === registration.id}
+        onClick={() => handleReviewRegistration(registration.id, 'approved')}
+      >
+        {registrationActionLoading === registration.id
+          ? 'PROCESANDO...'
+          : 'APROBAR'}
+      </button>
+
+      <button
+        type="button"
+        className="registration-reject"
+        disabled={registrationActionLoading === registration.id}
+        onClick={() => handleReviewRegistration(registration.id, 'rejected')}
+      >
+        RECHAZAR
+      </button>
+
+    </div>
+  )}
+
+</div>
               </article>
             );
           })}
