@@ -42,6 +42,8 @@ export default function App() {
   const [adminSavingId, setAdminSavingId] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [playerStats, setPlayerStats] = useState([]);
+const [statsStatus, setStatsStatus] = useState('idle');
   const [editingMember, setEditingMember] = useState(false);
 const [memberNickname, setMemberNickname] = useState('');
 const [memberSpecialty, setMemberSpecialty] = useState('');
