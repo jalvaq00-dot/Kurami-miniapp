@@ -528,6 +528,73 @@ const adminStats = {
   players: adminMembers.filter(m => m.role === 'player').length,
 };
 
+async function handleCreateTournament(event) {
+  event.preventDefault();
+
+  setCreatingTournament(true);
+  setCreateTournamentError('');
+
+  try {
+    const response = await fetch('/api/admin-tournaments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        initData: tg?.initData,
+        action: 'create_tournament',
+        tournament: {
+          ...tournamentForm,
+          starts_at: tournamentForm.starts_at
+            ? new Date(tournamentForm.starts_at).toISOString()
+            : null,
+          registration_opens_at: tournamentForm.registration_opens_at
+            ? new Date(tournamentForm.registration_opens_at).toISOString()
+            : null,
+          registration_closes_at: tournamentForm.registration_closes_at
+            ? new Date(tournamentForm.registration_closes_at).toISOString()
+            : null,
+          max_participants: tournamentForm.max_participants
+            ? Number(tournamentForm.max_participants)
+            : null
+        }
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || 'No se pudo crear el torneo'
+      );
+    }
+
+    setTournaments((previous) => [
+      result.tournament,
+      ...previous
+    ]);
+
+    setTournamentForm({
+      name: '',
+      game: 'Pokémon Champions',
+      format: 'VGC',
+      starts_at: '',
+      registration_opens_at: '',
+      registration_closes_at: '',
+      max_participants: ''
+    });
+
+    setShowTournamentForm(false);
+
+  } catch (error) {
+    console.error('Tournament creation failed:', error);
+    setCreateTournamentError(error.message);
+
+  } finally {
+    setCreatingTournament(false);
+  }
+}
+
 
   return (
     <main className="app-shell">
