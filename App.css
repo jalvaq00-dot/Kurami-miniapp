@@ -1511,3 +1511,55 @@ footer {
     padding: 13px;
   }
 }
+/* REGISTRATION ACTION BUTTONS */
+
+.registration-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 9px;
+}
+
+.registration-buttons {
+  display: flex;
+  gap: 7px;
+}
+
+.registration-buttons button {
+  border: 0;
+  border-radius: 7px;
+  padding: 8px 11px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.registration-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.registration-approve {
+  background: #238653;
+  color: #fff;
+}
+
+.registration-reject {
+  background: #9b3737;
+  color: #fff;
+}
+
+.registration-buttons button:not(:disabled):hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 480px) {
+  .registration-actions {
+    align-items: flex-start;
+  }
+
+  .registration-buttons button {
+    padding: 8px 9px;
+  }
+}
