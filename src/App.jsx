@@ -710,10 +710,94 @@ const adminStats = {
         </section>
       )}
 
-      {active === 'ranking' && (
-        <EmptyState icon="📊" title="Ranking Kurami"
-          text="Aquí mostraremos clasificaciones y resultados." />
-      )}
+     
+{active === 'ranking' && (
+  <section className="ranking-section">
+
+    <div className="eyebrow">
+      KURAMI E-SPORTS · COMPETITIVE RANKING
+    </div>
+
+    <div className="section-heading">
+      <h2>RANKING KURAMI</h2>
+      <p>Clasificación competitiva de nuestros jugadores</p>
+    </div>
+
+    {statsStatus === 'loading' && (
+      <p className="ranking-message">
+        Cargando clasificación...
+      </p>
+    )}
+
+    {statsStatus === 'error' && (
+      <p className="ranking-message">
+        No se pudo cargar el ranking. Vuelve a intentarlo.
+      </p>
+    )}
+
+    {statsStatus === 'success' && playerStats.length === 0 && (
+      <p className="ranking-message">
+        Todavía no hay jugadores registrados.
+      </p>
+    )}
+
+    {statsStatus === 'success' && playerStats.length > 0 && (
+      <div className="ranking-list">
+
+        {playerStats.map((player) => (
+          <article
+            className="ranking-card"
+            key={player.telegram_id}
+          >
+
+            <div className="ranking-position">
+              #{player.ranking_position}
+            </div>
+
+            <div className="player-avatar">
+              {player.photo_url ? (
+                <img src={player.photo_url} alt="" />
+              ) : (
+                <span>
+                  {(player.nickname || player.first_name || 'K')
+                    .charAt(0).toUpperCase()}
+                </span>
+              )}
+            </div>
+
+            <div className="ranking-player-info">
+              <strong>
+                {player.nickname ||
+                  player.display_name ||
+                  player.first_name ||
+                  'Jugador Kurami'}
+              </strong>
+
+              <small>
+                {player.specialty || 'Sin especialidad'}
+              </small>
+
+              <small>
+                {player.wins}V · {player.losses}D · {player.draws}E
+              </small>
+            </div>
+
+            <div className="ranking-points">
+              <strong>
+                {Number(player.total_points).toFixed(2)}
+              </strong>
+              <small>PTS</small>
+            </div>
+
+          </article>
+        ))}
+
+      </div>
+    )}
+
+  </section>
+)}
+
 
       
 {active === 'admin' && (
