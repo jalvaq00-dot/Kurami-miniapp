@@ -669,6 +669,49 @@ async function loadTournamentRegistrations(tournamentId) {
     setRegistrationActionLoading('');
   }
 }
+  async function handleRegisterTournament(tournamentId) {
+  setRegisteringTournament(tournamentId);
+  setRegistrationMessage('');
+
+  try {
+    const response = await fetch('/api/admin-tournaments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        initData: tg?.initData,
+        action: 'register_for_tournament',
+        tournamentId
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || 'No se pudo completar la inscripción'
+      );
+    }
+
+    setMyRegistrations((previous) => [
+      ...previous.filter(
+        (item) => item.tournament_id !== tournamentId
+      ),
+      result.registration
+    ]);
+
+    setRegistrationMessage(
+      'Solicitud enviada correctamente. Está pendiente de aprobación.'
+    );
+
+  } catch (error) {
+    console.error('Tournament registration failed:', error);
+    setRegistrationMessage(error.message);
+  } finally {
+    setRegisteringTournament('');
+  }
+}
 
   return (
     <main className="app-shell">
