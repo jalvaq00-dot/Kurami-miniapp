@@ -104,6 +104,14 @@ const [memberSaveMessage, setMemberSaveMessage] = useState('');
       cancelled = true;
     };
   }, []);
+  // Gestión de torneos
+const [tournaments, setTournaments] = useState([]);
+const [tournamentsStatus, setTournamentsStatus] = useState('idle');
+const [tournamentsError, setTournamentsError] = useState('');
+
+const [selectedTournament, setSelectedTournament] = useState(null);
+const [tournamentRegistrations, setTournamentRegistrations] = useState([]);
+const [registrationsStatus, setRegistrationsStatus] = useState('idle');
 
   // Cargar el directorio de jugadores.
   useEffect(() => {
