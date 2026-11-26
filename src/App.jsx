@@ -262,8 +262,9 @@ useEffect(() => {
       }
 
       if (!cancelled) {
-        setTournaments(result.tournaments || []);
-        setTournamentsStatus('success');
+       setTournaments(result.tournaments || []);
+setMyRegistrations(result.registrations || []);
+setTournamentsStatus('success');;
       }
 
     } catch (error) {
