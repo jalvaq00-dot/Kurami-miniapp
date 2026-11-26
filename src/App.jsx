@@ -774,10 +774,234 @@ async function handleCreateTournament(event) {
         </section>
       )}
 
-      {active === 'torneos' && (
-        <EmptyState icon="🏆" title="Próximos torneos"
-          text="Aquí publicaremos eventos, fechas e inscripciones." />
-      )}
+      
+{active === 'torneos' && (
+  <section className="tournaments-section">
+
+    <div className="eyebrow">
+      KURAMI E-SPORTS · TOURNAMENT CENTER
+    </div>
+
+    <div className="section-heading">
+      <h2>TORNEOS</h2>
+      <p>Centro de competición Kurami</p>
+    </div>
+
+    {['admin', 'staff'].includes(profile?.role) && (
+      <div className="tournament-admin-panel">
+
+        <button
+          type="button"
+          className="primary-button"
+          onClick={() => {
+            setCreateTournamentError('');
+            setShowTournamentForm(!showTournamentForm);
+          }}
+        >
+          {showTournamentForm ? 'CERRAR FORMULARIO' : '+ CREAR TORNEO'}
+        </button>
+
+        {showTournamentForm && (
+          <form
+            className="tournament-form"
+            onSubmit={handleCreateTournament}
+          >
+            <h3>NUEVO TORNEO</h3>
+
+            <label>Nombre del torneo</label>
+            <input
+              type="text"
+              required
+              maxLength={100}
+              placeholder="Ej. Kurami Championship"
+              value={tournamentForm.name}
+              onChange={(event) =>
+                setTournamentForm({
+                  ...tournamentForm,
+                  name: event.target.value
+                })
+              }
+            />
+
+            <label>Videojuego</label>
+            <select
+              value={tournamentForm.game}
+              onChange={(event) =>
+                setTournamentForm({
+                  ...tournamentForm,
+                  game: event.target.value
+                })
+              }
+            >
+              <option value="Pokémon Champions">Pokémon Champions</option>
+              <option value="Pokémon Escarlata y Púrpura">
+                Pokémon Escarlata y Púrpura
+              </option>
+              <option value="Pokémon GO">Pokémon GO</option>
+              <option value="Pokémon TCG">Pokémon TCG</option>
+              <option value="Pokémon Unite">Pokémon Unite</option>
+            </select>
+
+            <label>Formato</label>
+            <select
+              value={tournamentForm.format}
+              onChange={(event) =>
+                setTournamentForm({
+                  ...tournamentForm,
+                  format: event.target.value
+                })
+              }
+            >
+              <option value="VGC">VGC</option>
+              <option value="Individual">Individual</option>
+              <option value="Dobles">Dobles</option>
+              <option value="TCG">TCG</option>
+              <option value="Otro">Otro</option>
+            </select>
+
+            <label>Fecha de inicio</label>
+            <input
+              type="datetime-local"
+              value={tournamentForm.starts_at}
+              onChange={(event) =>
+                setTournamentForm({
+                  ...tournamentForm,
+                  starts_at: event.target.value
+                })
+              }
+            />
+
+            <label>Apertura de inscripciones</label>
+            <input
+              type="datetime-local"
+              value={tournamentForm.registration_opens_at}
+              onChange={(event) =>
+                setTournamentForm({
+                  ...tournamentForm,
+                  registration_opens_at: event.target.value
+                })
+              }
+            />
+
+            <label>Cierre de inscripciones</label>
+            <input
+              type="datetime-local"
+              value={tournamentForm.registration_closes_at}
+              onChange={(event) =>
+                setTournamentForm({
+                  ...tournamentForm,
+                  registration_closes_at: event.target.value
+                })
+              }
+            />
+
+            <label>Máximo de participantes</label>
+            <input
+              type="number"
+              min="2"
+              max="1024"
+              placeholder="Sin límite"
+              value={tournamentForm.max_participants}
+              onChange={(event) =>
+                setTournamentForm({
+                  ...tournamentForm,
+                  max_participants: event.target.value
+                })
+              }
+            />
+
+            {createTournamentError && (
+              <p className="tournament-error">
+                {createTournamentError}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="primary-button"
+              disabled={creatingTournament}
+            >
+              {creatingTournament ? 'CREANDO...' : 'PUBLICAR TORNEO'}
+            </button>
+          </form>
+        )}
+
+      </div>
+    )}
+
+    <div className="tournament-list-heading">
+      <h3>COMPETICIONES PUBLICADAS</h3>
+    </div>
+
+    {tournamentsStatus === 'loading' && (
+      <p className="tournament-message">
+        Cargando torneos...
+      </p>
+    )}
+
+    {tournamentsStatus === 'error' && (
+      <p className="tournament-error">
+        {tournamentsError || 'No se pudieron cargar los torneos.'}
+      </p>
+    )}
+
+    {tournamentsStatus === 'success' && tournaments.length === 0 && (
+      <p className="tournament-message">
+        Todavía no hay torneos publicados.
+      </p>
+    )}
+
+    {tournamentsStatus === 'success' && tournaments.length > 0 && (
+      <div className="tournament-list">
+        {tournaments.map((tournament) => (
+          <article
+            className="tournament-card"
+            key={tournament.id}
+          >
+            <div className="tournament-card-top">
+              <span>{tournament.game}</span>
+              <span className="tournament-status">
+                {tournament.status === 'planned'
+                  ? 'PLANIFICADO'
+                  : tournament.status.toUpperCase()}
+              </span>
+            </div>
+
+            <h3>{tournament.name}</h3>
+
+            <p>{tournament.format || 'Formato por definir'}</p>
+
+            <div className="tournament-card-details">
+              <span>
+                {tournament.starts_at
+                  ? new Date(tournament.starts_at).toLocaleString('es-ES')
+                  : 'Fecha pendiente'}
+              </span>
+
+              <span>
+                {tournament.max_participants
+                  ? `${tournament.max_participants} plazas`
+                  : 'Sin límite de plazas'}
+              </span>
+            </div>
+
+            {['admin', 'staff'].includes(profile?.role) && (
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => setSelectedTournament(tournament)}
+              >
+                GESTIONAR INSCRIPCIONES
+              </button>
+            )}
+          </article>
+        ))}
+      </div>
+    )}
+
+  </section>
+)}
+
 
       {active === 'jugadores' && (
         <section className="players-section">
