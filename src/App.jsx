@@ -224,13 +224,13 @@ useEffect(() => {
 }, [active, status]);
 
 useEffect(() => {
-  if (
-    active !== 'torneos' ||
-    status !== 'authenticated' ||
-    !['admin', 'staff'].includes(profile?.role)
-  ) {
-    return;
-  }
+ if (
+  active !== 'torneos' ||
+  status !== 'authenticated' ||
+  !profile?.role
+) {
+  return;
+}
 
   let cancelled = false;
 
