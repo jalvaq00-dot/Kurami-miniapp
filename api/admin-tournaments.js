@@ -242,24 +242,37 @@ if (
     }
 
     // CONSULTAR TORNEOS
-    if (action === 'list_tournaments') {
-      const { data, error } = await supabase
-        .from('tournaments')
-        .select('*')
-        .order('created_at', { ascending: false });
+   if (action === 'list_tournaments') {
+  const { data: tournaments, error } = await supabase
+    .from('tournaments')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Tournament list failed:', error.message);
-        return res.status(500).json({
-          error: 'Could not load tournaments'
-        });
-      }
+  if (error) {
+    console.error('Tournament list failed:', error.message);
+    return res.status(500).json({
+      error: 'Could not load tournaments'
+    });
+  }
 
-      return res.status(200).json({
-        success: true,
-        tournaments: data
-      });
-    }
+  const { data: registrations, error: registrationsError } = await supabase
+    .from('tournament_registrations')
+    .select('id, tournament_id, status, registered_at')
+    .eq('telegram_id', operator.telegram_id);
+
+  if (registrationsError) {
+    console.error('Player registrations failed:', registrationsError.message);
+    return res.status(500).json({
+      error: 'Could not load player registrations'
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    tournaments: tournaments || [],
+    registrations: registrations || []
+  });
+}
     if (action === 'register_for_tournament') {
   if (
     typeof tournamentId !== 'string' ||
