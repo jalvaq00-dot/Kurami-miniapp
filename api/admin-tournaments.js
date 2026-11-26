@@ -111,12 +111,26 @@ export default async function handler(req, res) {
   });
 }
 
+const playerAllowedActions = [
+  'list_tournaments',
+  'register_for_tournament'
+];
+
 if (
-  action !== 'list_tournaments' &&
+  !playerAllowedActions.includes(action) &&
   !['admin', 'staff'].includes(operator.role)
 ) {
   return res.status(403).json({
     error: 'Administrator or staff access required'
+  });
+}
+
+if (
+  action === 'register_for_tournament' &&
+  !['admin', 'staff', 'player'].includes(operator.role)
+) {
+  return res.status(403).json({
+    error: 'Player access required'
   });
 }
 
