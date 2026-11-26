@@ -1563,3 +1563,28 @@ footer {
     padding: 8px 9px;
   }
 }
+.registration-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px;
+  margin: 14px 0;
+  border: 1px solid rgba(80, 190, 130, 0.3);
+  border-radius: 10px;
+  background: rgba(80, 190, 130, 0.08);
+  color: #75d69d;
+  font-size: 13px;
+}
+
+.registration-feedback p {
+  margin: 0;
+}
+
+.registration-feedback button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 17px;
+}
