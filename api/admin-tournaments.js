@@ -100,10 +100,10 @@ export default async function handler(req, res) {
 
     // Comprobar el rol real del usuario.
     const { data: operator, error: operatorError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('telegram_id', user.id)
-      .single();
+  .from('profiles')
+  .select('telegram_id, role')
+  .eq('telegram_id', user.id)
+  .single();
 
     if (operatorError || !operator) {
   return res.status(403).json({
