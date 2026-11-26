@@ -631,7 +631,41 @@ async function loadTournamentRegistrations(tournamentId) {
     setRegistrationsStatus('error');
   }
 }
-  
+  async function handleReviewRegistration(registrationId, decision) {
+  setRegistrationActionLoading(registrationId);
+  setRegistrationError('');
+
+  try {
+    const response = await fetch('/api/admin-tournaments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        initData: tg?.initData,
+        action: 'review_registration',
+        registrationId,
+        decision
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || 'No se pudo actualizar la inscripción'
+      );
+    }
+
+    await loadTournamentRegistrations(selectedTournament.id);
+
+  } catch (error) {
+    console.error('Registration review failed:', error);
+    setRegistrationError(error.message);
+  } finally {
+    setRegistrationActionLoading('');
+  }
+}
 
   return (
     <main className="app-shell">
