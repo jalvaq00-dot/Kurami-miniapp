@@ -596,7 +596,41 @@ async function handleCreateTournament(event) {
     setCreatingTournament(false);
   }
 }
+async function loadTournamentRegistrations(tournamentId) {
+  setRegistrationsStatus('loading');
+  setRegistrationError('');
+  setTournamentRegistrations([]);
 
+  try {
+    const response = await fetch('/api/admin-tournaments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        initData: tg?.initData,
+        action: 'list_registrations',
+        tournamentId
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || 'No se pudieron cargar las inscripciones'
+      );
+    }
+
+    setTournamentRegistrations(result.registrations || []);
+    setRegistrationsStatus('success');
+
+  } catch (error) {
+    console.error('Error loading registrations:', error);
+    setRegistrationError(error.message);
+    setRegistrationsStatus('error');
+  }
+}
 
   return (
     <main className="app-shell">
