@@ -1022,13 +1022,16 @@ async function loadTournamentRegistrations(tournamentId) {
             </div>
 
             {['admin', 'staff'].includes(profile?.role) && (
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => setSelectedTournament(tournament)}
-              >
-                GESTIONAR INSCRIPCIONES
-              </button>
+             <button
+  type="button"
+  className="secondary-button"
+  onClick={() => {
+    setSelectedTournament(tournament);
+    loadTournamentRegistrations(tournament.id);
+  }}
+>
+  GESTIONAR INSCRIPCIONES
+</button>
             )}
           </article>
         ))}
