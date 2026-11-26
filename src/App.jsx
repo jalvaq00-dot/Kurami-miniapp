@@ -146,6 +146,60 @@ const [memberSaveMessage, setMemberSaveMessage] = useState('');
       cancelled = true;
     };
   }, [active, status]);
+  
+useEffect(() => {
+  if (
+    (active !== 'jugadores' && active !== 'ranking') ||
+    status !== 'authenticated'
+  ) {
+    return;
+  }
+
+  let cancelled = false;
+
+  async function loadPlayerStats() {
+    setStatsStatus('loading');
+
+    try {
+      const response = await fetch('/api/player-stats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          initData: tg?.initData
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || 'No se pudieron cargar las estadísticas'
+        );
+      }
+
+      if (!cancelled) {
+        setPlayerStats(result.stats || []);
+        setStatsStatus('success');
+      }
+
+    } catch (error) {
+      console.error('Error loading player stats:', error);
+
+      if (!cancelled) {
+        setStatsStatus('error');
+      }
+    }
+  }
+
+  loadPlayerStats();
+
+  return () => {
+    cancelled = true;
+  };
+}, [active, status]);
+
 
   // Cargar el panel de administración.
   useEffect(() => {
