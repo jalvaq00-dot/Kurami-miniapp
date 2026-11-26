@@ -1050,6 +1050,19 @@ async function loadTournamentRegistrations(tournamentId) {
     <div className="tournament-list-heading">
       <h3>COMPETICIONES PUBLICADAS</h3>
     </div>
+    {registrationMessage && (
+  <div className="registration-feedback">
+    <p>{registrationMessage}</p>
+
+    <button
+      type="button"
+      onClick={() => setRegistrationMessage('')}
+      aria-label="Cerrar aviso"
+    >
+      ✕
+    </button>
+  </div>
+)}
 
     {tournamentsStatus === 'loading' && (
       <p className="tournament-message">
