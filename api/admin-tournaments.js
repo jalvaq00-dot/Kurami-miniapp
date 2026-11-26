@@ -246,6 +246,119 @@ if (
         tournaments: data
       });
     }
+    if (action === 'register_for_tournament') {
+  if (
+    typeof tournamentId !== 'string' ||
+    !/^[0-9a-f-]{36}$/i.test(tournamentId)
+  ) {
+    return res.status(400).json({
+      error: 'Invalid tournament ID'
+    });
+  }
+
+  const { data: tournament, error: tournamentError } = await supabase
+    .from('tournaments')
+    .select('*')
+    .eq('id', tournamentId)
+    .single();
+
+  if (tournamentError || !tournament) {
+    return res.status(404).json({
+      error: 'Tournament not found'
+    });
+  }
+
+  if (
+    tournament.status !== 'planned' ||
+    tournament.registration_enabled === false
+  ) {
+    return res.status(400).json({
+      error: 'Registrations are not available'
+    });
+  }
+
+  const now = Date.now();
+
+  if (
+    tournament.registration_opens_at &&
+    now < new Date(tournament.registration_opens_at).getTime()
+  ) {
+    return res.status(400).json({
+      error: 'Registration has not opened yet'
+    });
+  }
+
+  if (
+    tournament.registration_closes_at &&
+    now > new Date(tournament.registration_closes_at).getTime()
+  ) {
+    return res.status(400).json({
+      error: 'Registration is closed'
+    });
+  }
+
+  const { data: existing } = await supabase
+    .from('tournament_registrations')
+    .select('id, status')
+    .eq('tournament_id', tournamentId)
+    .eq('telegram_id', operator.telegram_id)
+    .maybeSingle();
+
+  if (existing && existing.status !== 'withdrawn') {
+    return res.status(409).json({
+      error: 'You already have a registration for this tournament'
+    });
+  }
+
+  if (existing) {
+    const { data, error } = await supabase
+      .from('tournament_registrations')
+      .update({
+        status: 'pending',
+        registered_at: new Date().toISOString(),
+        reviewed_by: null,
+        reviewed_at: null,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', existing.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Registration update failed:', error.message);
+      return res.status(500).json({
+        error: 'Could not register for tournament'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      registration: data
+    });
+  }
+
+  const { data, error } = await supabase
+    .from('tournament_registrations')
+    .insert({
+      tournament_id: tournamentId,
+      telegram_id: operator.telegram_id,
+      status: 'pending'
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Registration creation failed:', error.message);
+    return res.status(500).json({
+      error: 'Could not register for tournament'
+    });
+  }
+
+  return res.status(201).json({
+    success: true,
+    registration: data
+  });
+}
 
     // CONSULTAR SOLICITUDES DE INSCRIPCIÓN
     if (action === 'list_registrations') {
