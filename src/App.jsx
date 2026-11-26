@@ -208,6 +208,63 @@ useEffect(() => {
   };
 }, [active, status]);
 
+useEffect(() => {
+  if (
+    active !== 'torneos' ||
+    status !== 'authenticated' ||
+    !['admin', 'staff'].includes(profile?.role)
+  ) {
+    return;
+  }
+
+  let cancelled = false;
+
+  async function loadTournaments() {
+    setTournamentsStatus('loading');
+    setTournamentsError('');
+
+    try {
+      const response = await fetch('/api/admin-tournaments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          initData: tg?.initData,
+          action: 'list_tournaments'
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || 'No se pudieron cargar los torneos'
+        );
+      }
+
+      if (!cancelled) {
+        setTournaments(result.tournaments || []);
+        setTournamentsStatus('success');
+      }
+
+    } catch (error) {
+      console.error('Error loading tournaments:', error);
+
+      if (!cancelled) {
+        setTournamentsError(error.message);
+        setTournamentsStatus('error');
+      }
+    }
+  }
+
+  loadTournaments();
+
+  return () => {
+    cancelled = true;
+  };
+}, [active, status, profile?.role]);
+
 
   // Cargar el panel de administración.
   useEffect(() => {
