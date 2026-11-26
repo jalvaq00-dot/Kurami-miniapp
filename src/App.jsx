@@ -892,98 +892,7 @@ const adminStats = {
             </span>
           )}
         </div>
-        {selectedPlayer && (
-  <div className="admin-modal-overlay">
-    <section className="admin-modal">
-
-      <button
-        type="button"
-        className="admin-modal-close"
-        onClick={() => setSelectedPlayer(null)}
-      >
-        ✕
-      </button>
-
-      <div className="eyebrow">
-        KURAMI E-SPORTS · PLAYER PROFILE
-      </div>
-
-      <div className="admin-modal-profile">
-
-        <div className="player-avatar">
-          {selectedPlayer.photo_url ? (
-            <img src={selectedPlayer.photo_url} alt="" />
-          ) : (
-            <span>
-              {(selectedPlayer.nickname ||
-                selectedPlayer.first_name ||
-                'K').charAt(0).toUpperCase()}
-            </span>
-          )}
-        </div>
-
-        <h2>
-          {selectedPlayer.nickname ||
-            selectedPlayer.display_name ||
-            [selectedPlayer.first_name, selectedPlayer.last_name]
-              .filter(Boolean).join(' ') ||
-            'Jugador Kurami'}
-        </h2>
-
-        <span className={`player-role role-${selectedPlayer.role}`}>
-          {roleLabels[selectedPlayer.role] || 'JUGADOR'}
-        </span>
-
-      </div>
-
-      <div className="admin-modal-details">
-
-        <div>
-          <small>NOMBRE</small>
-          <strong>
-            {[selectedPlayer.first_name, selectedPlayer.last_name]
-              .filter(Boolean).join(' ') || 'No disponible'}
-          </strong>
-        </div>
-
-        <div>
-          <small>USUARIO DE TELEGRAM</small>
-          <strong>
-            {selectedPlayer.username
-              ? `@${selectedPlayer.username}`
-              : 'No disponible'}
-          </strong>
-        </div>
-
-        <div>
-          <small>ESPECIALIDAD</small>
-          <strong>
-            {selectedPlayer.specialty || 'Sin especificar'}
-          </strong>
-        </div>
-
-        <div className="admin-modal-bio">
-          <small>BIOGRAFÍA</small>
-          <p>
-            {selectedPlayer.bio ||
-              'Este jugador todavía no tiene biografía.'}
-          </p>
-        </div>
-
-      </div>
-
-      <button
-        type="button"
-        className="admin-detail-button"
-        onClick={() => setSelectedPlayer(null)}
-      >
-        Cerrar perfil
-      </button>
-
-    </section>
-  </div>
-)}
-
+        
         <h2>
           {selectedMember.nickname ||
             selectedMember.display_name ||
@@ -1132,6 +1041,97 @@ const adminStats = {
         }}
       >
         Cerrar ficha
+      </button>
+
+    </section>
+  </div>
+)}
+      {selectedPlayer && (
+  <div className="admin-modal-overlay">
+    <section className="admin-modal">
+
+      <button
+        type="button"
+        className="admin-modal-close"
+        onClick={() => setSelectedPlayer(null)}
+      >
+        ✕
+      </button>
+
+      <div className="eyebrow">
+        KURAMI E-SPORTS · PLAYER PROFILE
+      </div>
+
+      <div className="admin-modal-profile">
+
+        <div className="player-avatar">
+          {selectedPlayer.photo_url ? (
+            <img src={selectedPlayer.photo_url} alt="" />
+          ) : (
+            <span>
+              {(selectedPlayer.nickname ||
+                selectedPlayer.first_name ||
+                'K').charAt(0).toUpperCase()}
+            </span>
+          )}
+        </div>
+
+        <h2>
+          {selectedPlayer.nickname ||
+            selectedPlayer.display_name ||
+            [selectedPlayer.first_name, selectedPlayer.last_name]
+              .filter(Boolean).join(' ') ||
+            'Jugador Kurami'}
+        </h2>
+
+        <span className={`player-role role-${selectedPlayer.role}`}>
+          {roleLabels[selectedPlayer.role] || 'JUGADOR'}
+        </span>
+
+      </div>
+
+      <div className="admin-modal-details">
+
+        <div>
+          <small>NOMBRE</small>
+          <strong>
+            {[selectedPlayer.first_name, selectedPlayer.last_name]
+              .filter(Boolean).join(' ') || 'No disponible'}
+          </strong>
+        </div>
+
+        <div>
+          <small>USUARIO DE TELEGRAM</small>
+          <strong>
+            {selectedPlayer.username
+              ? `@${selectedPlayer.username}`
+              : 'No disponible'}
+          </strong>
+        </div>
+
+        <div>
+          <small>ESPECIALIDAD</small>
+          <strong>
+            {selectedPlayer.specialty || 'Sin especificar'}
+          </strong>
+        </div>
+
+        <div className="admin-modal-bio">
+          <small>BIOGRAFÍA</small>
+          <p>
+            {selectedPlayer.bio ||
+              'Este jugador todavía no tiene biografía.'}
+          </p>
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        className="admin-detail-button"
+        onClick={() => setSelectedPlayer(null)}
+      >
+        Cerrar perfil
       </button>
 
     </section>
