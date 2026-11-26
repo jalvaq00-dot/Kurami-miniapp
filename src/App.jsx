@@ -108,6 +108,9 @@ const [memberSaveMessage, setMemberSaveMessage] = useState('');
 const [tournaments, setTournaments] = useState([]);
 const [tournamentsStatus, setTournamentsStatus] = useState('idle');
 const [tournamentsError, setTournamentsError] = useState('');
+  const [myRegistrations, setMyRegistrations] = useState([]);
+const [registeringTournament, setRegisteringTournament] = useState('');
+const [registrationMessage, setRegistrationMessage] = useState('');
 
 const [selectedTournament, setSelectedTournament] = useState(null);
 const [tournamentRegistrations, setTournamentRegistrations] = useState([]);
