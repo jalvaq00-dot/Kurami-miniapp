@@ -1027,3 +1027,142 @@ footer {
     height: 96px;
   }
 }
+
+/* =====================================
+   KURAMI E-SPORTS - COMPETITIVE RANKING
+===================================== */
+
+.ranking-section {
+  padding: 18px 0 30px;
+}
+
+.ranking-section > .eyebrow {
+  color: #b995ff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.ranking-section .section-heading {
+  margin: 18px 0 24px;
+}
+
+.ranking-section .section-heading h2 {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 30px;
+  letter-spacing: 1px;
+}
+
+.ranking-section .section-heading p {
+  margin-top: 6px;
+  color: #aaa0ba;
+  font-size: 12px;
+}
+
+.ranking-list {
+  display: grid;
+  gap: 11px;
+}
+
+.ranking-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid rgba(167, 122, 255, 0.22);
+  border-radius: 13px;
+  background: linear-gradient(
+    120deg,
+    rgba(47, 35, 69, 0.95),
+    rgba(20, 19, 31, 0.98)
+  );
+}
+
+.ranking-position {
+  min-width: 35px;
+  color: #b995ff;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.ranking-card .player-avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border: 2px solid #7955b2;
+  box-shadow: 0 0 12px rgba(167, 122, 255, 0.18);
+}
+
+.ranking-player-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ranking-player-info strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ranking-player-info small {
+  color: #aaa0ba;
+  font-size: 10px;
+}
+
+.ranking-points {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.ranking-points strong {
+  color: #c7a5ff;
+  font-family: var(--font-display);
+  font-size: 21px;
+}
+
+.ranking-points small {
+  color: #a99bbd;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.ranking-message {
+  padding: 22px 12px;
+  color: #b9aec9;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 380px) {
+  .ranking-card {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .ranking-position {
+    min-width: 28px;
+    font-size: 17px;
+  }
+
+  .ranking-card .player-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  .ranking-points strong {
+    font-size: 18px;
+  }
+}
