@@ -1040,7 +1040,114 @@ async function loadTournamentRegistrations(tournamentId) {
 
   </section>
 )}
+{selectedTournament && (
+  <div className="admin-modal-overlay">
+    <section className="admin-modal tournament-registrations-modal">
 
+      <button
+        type="button"
+        className="admin-modal-close"
+        onClick={() => {
+          setSelectedTournament(null);
+          setTournamentRegistrations([]);
+          setRegistrationError('');
+          setRegistrationsStatus('idle');
+        }}
+      >
+        ✕
+      </button>
+
+      <div className="eyebrow">
+        KURAMI E-SPORTS · REGISTRATION MANAGEMENT
+      </div>
+
+      <h2>{selectedTournament.name}</h2>
+
+      <p>
+        {selectedTournament.game} · {selectedTournament.format || 'Formato por definir'}
+      </p>
+
+      <div className="registration-summary">
+        <span>Solicitudes recibidas</span>
+        <strong>{tournamentRegistrations.length}</strong>
+      </div>
+
+      {registrationsStatus === 'loading' && (
+        <p className="tournament-message">
+          Cargando inscripciones...
+        </p>
+      )}
+
+      {registrationsStatus === 'error' && (
+        <p className="tournament-error">
+          {registrationError || 'No se pudieron cargar las inscripciones.'}
+        </p>
+      )}
+
+      {registrationsStatus === 'success' && tournamentRegistrations.length === 0 && (
+        <p className="tournament-message">
+          Todavía no hay solicitudes de inscripción.
+        </p>
+      )}
+
+      {registrationsStatus === 'success' && tournamentRegistrations.length > 0 && (
+        <div className="registration-list">
+          {tournamentRegistrations.map((registration) => {
+            const player = registration.player;
+
+            const playerName =
+              player?.nickname ||
+              player?.display_name ||
+              [player?.first_name, player?.last_name].filter(Boolean).join(' ') ||
+              player?.username ||
+              'Jugador sin nombre';
+
+            return (
+              <article
+                className="registration-card"
+                key={registration.id}
+              >
+                <div className="registration-player">
+                  {player?.photo_url ? (
+                    <img
+                      src={player.photo_url}
+                      alt=""
+                      className="registration-avatar"
+                    />
+                  ) : (
+                    <div className="registration-avatar registration-avatar-placeholder">
+                      {playerName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+
+                  <div>
+                    <strong>{playerName}</strong>
+                    <span>
+                      {player?.username
+                        ? `@${player.username}`
+                        : 'Sin nombre de usuario'}
+                    </span>
+                  </div>
+                </div>
+
+                <span className={`registration-status status-${registration.status}`}>
+                  {registration.status === 'pending'
+                    ? 'PENDIENTE'
+                    : registration.status === 'approved'
+                      ? 'APROBADA'
+                      : registration.status === 'rejected'
+                        ? 'RECHAZADA'
+                        : 'RETIRADA'}
+                </span>
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+    </section>
+  </div>
+)}
 
       {active === 'jugadores' && (
         <section className="players-section">
