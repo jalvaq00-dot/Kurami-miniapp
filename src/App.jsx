@@ -540,6 +540,7 @@ const adminStats = {
   players: adminMembers.filter(m => m.role === 'player').length,
 };
 
+
 async function handleCreateTournament(event) {
   event.preventDefault();
 
@@ -557,18 +558,30 @@ async function handleCreateTournament(event) {
         action: 'create_tournament',
         tournament: {
           ...tournamentForm,
+
           starts_at: tournamentForm.starts_at
             ? new Date(tournamentForm.starts_at).toISOString()
             : null,
+
           registration_opens_at: tournamentForm.registration_opens_at
             ? new Date(tournamentForm.registration_opens_at).toISOString()
             : null,
+
           registration_closes_at: tournamentForm.registration_closes_at
             ? new Date(tournamentForm.registration_closes_at).toISOString()
             : null,
+
           max_participants: tournamentForm.max_participants
             ? Number(tournamentForm.max_participants)
-            : null
+            : null,
+
+          league_legs: Number(tournamentForm.league_legs),
+
+          swiss_rounds:
+            tournamentForm.pairing_system === 'swiss' &&
+            tournamentForm.swiss_rounds_mode === 'manual'
+              ? Number(tournamentForm.swiss_rounds)
+              : null
         }
       })
     });
@@ -593,7 +606,11 @@ async function handleCreateTournament(event) {
       starts_at: '',
       registration_opens_at: '',
       registration_closes_at: '',
-      max_participants: ''
+      max_participants: '',
+      pairing_system: 'league',
+      league_legs: 1,
+      swiss_rounds_mode: 'auto',
+      swiss_rounds: 3
     });
 
     setShowTournamentForm(false);
@@ -606,6 +623,7 @@ async function handleCreateTournament(event) {
     setCreatingTournament(false);
   }
 }
+
 async function loadTournamentRegistrations(tournamentId) {
   setRegistrationsStatus('loading');
   setRegistrationError('');
