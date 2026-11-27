@@ -740,6 +740,66 @@ async function loadTournamentRegistrations(tournamentId) {
     setRegisteringTournament('');
   }
 }
+  
+async function handleGenerateDraw(tournament) {
+  const confirmed = window.confirm(
+    `¿Generar el sorteo de "${tournament.name}"?\n\n` +
+    'Esta operación asignará aleatoriamente las semillas ' +
+    'y creará los enfrentamientos del torneo. No se podrá repetir.'
+  );
+
+  if (!confirmed) return;
+
+  setGeneratingDraw(tournament.id);
+  setDrawMessage('');
+  setDrawError('');
+
+  try {
+    const response = await fetch('/api/tournament-pairings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        initData: tg?.initData,
+        action: 'generate_initial_draw',
+        tournamentId: tournament.id
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || 'No se pudo generar el sorteo'
+      );
+    }
+
+    setDrawMessage(
+      `Sorteo generado correctamente: ${result.result.rounds_created} ` +
+      `jornada(s) creadas.`
+    );
+
+    setTournaments((previous) =>
+      previous.map((item) =>
+        item.id === tournament.id
+          ? {
+              ...item,
+              current_round: result.result.rounds_created,
+              total_rounds: result.result.total_rounds
+            }
+          : item
+      )
+    );
+
+  } catch (error) {
+    console.error('Tournament draw failed:', error);
+    setDrawError(error.message);
+  } finally {
+    setGeneratingDraw(null);
+  }
+}
+
 
   return (
     <main className="app-shell">
