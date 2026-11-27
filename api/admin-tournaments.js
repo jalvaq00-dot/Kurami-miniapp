@@ -135,111 +135,171 @@ if (
 }
 
     // CREAR TORNEO
-    if (action === 'create_tournament') {
-      const {
-        name,
-        game,
-        format,
-        starts_at,
-        registration_opens_at,
-        registration_closes_at,
-        max_participants
-      } = tournament || {};
+   
+if (action === 'create_tournament') {
+  const {
+    name,
+    game,
+    format,
+    starts_at,
+    registration_opens_at,
+    registration_closes_at,
+    max_participants,
+    pairing_system = 'league',
+    league_legs = 1,
+    swiss_rounds_mode = 'auto',
+    swiss_rounds = null
+  } = tournament || {};
 
-      if (
-        typeof name !== 'string' ||
-        typeof game !== 'string' ||
-        !name.trim() ||
-        !game.trim() ||
-        name.trim().length > 100 ||
-        game.trim().length > 60
-      ) {
-        return res.status(400).json({
-          error: 'Invalid tournament name or game'
-        });
-      }
+  if (
+    typeof name !== 'string' ||
+    typeof game !== 'string' ||
+    !name.trim() ||
+    !game.trim() ||
+    name.trim().length > 100 ||
+    game.trim().length > 60
+  ) {
+    return res.status(400).json({
+      error: 'Invalid tournament name or game'
+    });
+  }
 
-      if (
-        format !== undefined &&
-        format !== null &&
-        (typeof format !== 'string' || format.length > 80)
-      ) {
-        return res.status(400).json({
-          error: 'Invalid tournament format'
-        });
-      }
+  if (
+    format !== undefined &&
+    format !== null &&
+    (typeof format !== 'string' || format.length > 80)
+  ) {
+    return res.status(400).json({
+      error: 'Invalid tournament format'
+    });
+  }
 
-      const validDate = (value) =>
-        value === undefined ||
-        value === null ||
-        value === '' ||
-        (
-          typeof value === 'string' &&
-          Number.isFinite(Date.parse(value))
-        );
+  // Validar modalidad de enfrentamientos
+  if (!['league', 'swiss'].includes(pairing_system)) {
+    return res.status(400).json({
+      error: 'Invalid pairing system'
+    });
+  }
 
-      if (
-        !validDate(starts_at) ||
-        !validDate(registration_opens_at) ||
-        !validDate(registration_closes_at)
-      ) {
-        return res.status(400).json({
-          error: 'Invalid tournament dates'
-        });
-      }
+  // Validar vueltas de liga
+  if (![1, 2].includes(league_legs)) {
+    return res.status(400).json({
+      error: 'League legs must be 1 or 2'
+    });
+  }
 
-      if (
-        registration_opens_at &&
-        registration_closes_at &&
-        new Date(registration_opens_at) >= new Date(registration_closes_at)
-      ) {
-        return res.status(400).json({
-          error: 'Registration closing date must be after opening date'
-        });
-      }
+  // Validar configuración suiza
+  if (!['auto', 'manual'].includes(swiss_rounds_mode)) {
+    return res.status(400).json({
+      error: 'Invalid Swiss rounds mode'
+    });
+  }
 
-      if (
-        max_participants !== undefined &&
-        max_participants !== null &&
-        (
-          !Number.isSafeInteger(max_participants) ||
-          max_participants < 2 ||
-          max_participants > 1024
-        )
-      ) {
-        return res.status(400).json({
-          error: 'Invalid participant limit'
-        });
-      }
+  if (
+    swiss_rounds_mode === 'manual' &&
+    (
+      !Number.isSafeInteger(swiss_rounds) ||
+      swiss_rounds < 1 ||
+      swiss_rounds > 20
+    )
+  ) {
+    return res.status(400).json({
+      error: 'Manual Swiss rounds must be between 1 and 20'
+    });
+  }
 
-      const { data, error } = await supabase
-        .from('tournaments')
-        .insert({
-          name: name.trim(),
-          game: game.trim(),
-          format: format?.trim() || null,
-          starts_at: starts_at || null,
-          registration_opens_at: registration_opens_at || null,
-          registration_closes_at: registration_closes_at || null,
-          max_participants: max_participants || null,
-          registration_enabled: true,
-          status: 'planned'
-        })
-        .select('*')
-        .single();
+  if (
+    swiss_rounds_mode === 'auto' &&
+    swiss_rounds !== null
+  ) {
+    return res.status(400).json({
+      error: 'Automatic Swiss rounds must not specify a round count'
+    });
+  }
 
-      if (error) {
-        console.error('Tournament creation failed:', error.message);
-        return res.status(500).json({
-          error: 'Could not create tournament'
-        });
-      }
+  const validDate = (value) =>
+    value === undefined ||
+    value === null ||
+    value === '' ||
+    (
+      typeof value === 'string' &&
+      Number.isFinite(Date.parse(value))
+    );
 
-      return res.status(201).json({
-        success: true,
-        tournament: data
-      });
-    }
+  if (
+    !validDate(starts_at) ||
+    !validDate(registration_opens_at) ||
+    !validDate(registration_closes_at)
+  ) {
+    return res.status(400).json({
+      error: 'Invalid tournament dates'
+    });
+  }
+
+  if (
+    registration_opens_at &&
+    registration_closes_at &&
+    new Date(registration_opens_at) >= new Date(registration_closes_at)
+  ) {
+    return res.status(400).json({
+      error: 'Registration closing date must be after opening date'
+    });
+  }
+
+  if (
+    max_participants !== undefined &&
+    max_participants !== null &&
+    (
+      !Number.isSafeInteger(max_participants) ||
+      max_participants < 2 ||
+      max_participants > 1024
+    )
+  ) {
+    return res.status(400).json({
+      error: 'Invalid participant limit'
+    });
+  }
+
+  const { data, error } = await supabase
+    .from('tournaments')
+    .insert({
+      name: name.trim(),
+      game: game.trim(),
+      format: format?.trim() || null,
+      starts_at: starts_at || null,
+      registration_opens_at: registration_opens_at || null,
+      registration_closes_at: registration_closes_at || null,
+      max_participants: max_participants || null,
+      registration_enabled: true,
+      status: 'planned',
+
+      pairing_system,
+      league_legs,
+      swiss_rounds_mode,
+      swiss_rounds:
+        pairing_system === 'swiss' &&
+        swiss_rounds_mode === 'manual'
+          ? swiss_rounds
+          : null,
+
+      current_round: 0,
+      total_rounds: null
+    })
+    .select('*')
+    .single();
+
+  if (error) {
+    console.error('Tournament creation failed:', error.message);
+    return res.status(500).json({
+      error: 'Could not create tournament'
+    });
+  }
+
+  return res.status(201).json({
+    success: true,
+    tournament: data
+  });
+}
 
     // CONSULTAR TORNEOS
    if (action === 'list_tournaments') {
