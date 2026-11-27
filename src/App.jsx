@@ -948,9 +948,83 @@ async function loadTournamentRegistrations(tournamentId) {
             className="tournament-form"
             onSubmit={handleCreateTournament}
           >
-            <h3>NUEVO TORNEO</h3>
+           
+<h3>NUEVO TORNEO</h3>
 
-            <label>Nombre del torneo</label>
+{/* SISTEMA DE ENFRENTAMIENTOS */}
+<label>Sistema de enfrentamientos</label>
+<select
+  value={tournamentForm.pairing_system}
+  onChange={(event) =>
+    setTournamentForm({
+      ...tournamentForm,
+      pairing_system: event.target.value
+    })
+  }
+>
+  <option value="league">Liga · Todos contra todos</option>
+  <option value="swiss">Sistema suizo</option>
+</select>
+
+{/* CONFIGURACIÓN DE LIGA */}
+{tournamentForm.pairing_system === 'league' && (
+  <>
+    <label>Vueltas de la liga</label>
+    <select
+      value={tournamentForm.league_legs}
+      onChange={(event) =>
+        setTournamentForm({
+          ...tournamentForm,
+          league_legs: Number(event.target.value)
+        })
+      }
+    >
+      <option value={1}>Una vuelta</option>
+      <option value={2}>Ida y vuelta</option>
+    </select>
+  </>
+)}
+
+{/* CONFIGURACIÓN SUIZA */}
+{tournamentForm.pairing_system === 'swiss' && (
+  <>
+    <label>Configuración de rondas</label>
+    <select
+      value={tournamentForm.swiss_rounds_mode}
+      onChange={(event) =>
+        setTournamentForm({
+          ...tournamentForm,
+          swiss_rounds_mode: event.target.value
+        })
+      }
+    >
+      <option value="auto">Cálculo automático</option>
+      <option value="manual">Establecer manualmente</option>
+    </select>
+
+    {tournamentForm.swiss_rounds_mode === 'manual' && (
+      <>
+        <label>Número de rondas</label>
+        <input
+          type="number"
+          min="1"
+          max="20"
+          required
+          value={tournamentForm.swiss_rounds}
+          onChange={(event) =>
+            setTournamentForm({
+              ...tournamentForm,
+              swiss_rounds: event.target.value
+            })
+          }
+        />
+      </>
+    )}
+  </>
+)}
+
+<label>Nombre del torneo</label>
+
             <input
               type="text"
               required
