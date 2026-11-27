@@ -1116,14 +1116,58 @@ async function loadTournamentRegistrations(tournamentId) {
               </span>
             </div>
 
-            {['admin', 'staff'].includes(profile?.role) && (
-             <button
-  type="button"
-  className="secondary-button"
-  onClick={() => {
-    setSelectedTournament(tournament);
-    loadTournamentRegistrations(tournament.id);
-  }}
+            {(() => {
+  const registration = myRegistrations.find(
+    (item) => item.tournament_id === tournament.id
+  );
+
+  const registrationOpen =
+    tournament.status === 'planned' &&
+    tournament.registration_enabled !== false &&
+    (!tournament.registration_opens_at ||
+      Date.now() >= new Date(tournament.registration_opens_at).getTime()) &&
+    (!tournament.registration_closes_at ||
+      Date.now() <= new Date(tournament.registration_closes_at).getTime());
+
+  if (registration?.status === 'pending') {
+    return (
+      <button type="button" className="secondary-button" disabled>
+        SOLICITUD PENDIENTE
+      </button>
+    );
+  }
+
+  if (registration?.status === 'approved') {
+    return (
+      <button type="button" className="secondary-button" disabled>
+        INSCRIPCIÓN APROBADA
+      </button>
+    );
+  }
+
+  if (registration?.status === 'rejected') {
+    return (
+      <button type="button" className="secondary-button" disabled>
+        INSCRIPCIÓN RECHAZADA
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className="primary-button"
+      disabled={!registrationOpen || registeringTournament === tournament.id}
+      onClick={() => handleRegisterTournament(tournament.id)}
+    >
+      {registeringTournament === tournament.id
+        ? 'ENVIANDO...'
+        : registrationOpen
+          ? 'INSCRIBIRME'
+          : 'INSCRIPCIONES CERRADAS'}
+    </button>
+  );
+})()}
 >
   GESTIONAR INSCRIPCIONES
 </button>
