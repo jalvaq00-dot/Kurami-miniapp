@@ -72,13 +72,15 @@ export default async function handler(req, res) {
     }
 
     const {
-      initData,
-      action,
-      tournamentId,
-      matchId,
-      teamOwnerTelegramId,
-      teamPaste
-    } = req.body || {};
+  initData,
+  action,
+  tournamentId,
+  matchId,
+  teamOwnerTelegramId,
+  teamPaste,
+  player1TelegramId,
+  player2TelegramId
+} = req.body || {};
 
     if (typeof initData !== 'string' || initData.length > 10000) {
       return res.status(400).json({
