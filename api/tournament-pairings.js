@@ -115,17 +115,18 @@ function generateLeagueRounds(participants, legs) {
 }
 
 // Primera ronda suiza: emparejamiento aleatorio.
-function generateFirstSwissRound(participants) {
-  const shuffled = shuffleParticipants(participants);
+
+function generateFirstSwissRound(shuffledParticipants) {
+  const players = [...shuffledParticipants];
   const pairs = [];
   let bye = null;
 
-  if (shuffled.length % 2 !== 0) {
-    bye = shuffled.pop();
+  if (players.length % 2 !== 0) {
+    bye = players.pop();
   }
 
-  for (let i = 0; i < shuffled.length; i += 2) {
-    pairs.push([shuffled[i], shuffled[i + 1]]);
+  for (let i = 0; i < players.length; i += 2) {
+    pairs.push([players[i], players[i + 1]]);
   }
 
   return [{
@@ -134,6 +135,7 @@ function generateFirstSwissRound(participants) {
     bye
   }];
 }
+
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
