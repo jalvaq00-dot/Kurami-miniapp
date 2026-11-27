@@ -140,6 +140,55 @@ export default async function handler(req, res) {
     }
 
     // ==========================================
+    // INICIAR COMBATE Y BLOQUEAR EQUIPOS
+    // ==========================================
+
+    if (action === 'start_match') {
+      // Solo administradores y staff pueden iniciar combates
+      if (!isJudge) {
+        return res.status(403).json({
+          error: 'Administrator or staff access required'
+        });
+      }
+
+      if (!UUID_REGEX.test(matchId || '')) {
+        return res.status(400).json({
+          error: 'Invalid match ID'
+        });
+      }
+
+      if (!['planned', 'in_progress'].includes(tournament.status)) {
+        return res.status(403).json({
+          error: 'Tournament cannot start matches'
+        });
+      }
+
+      const { data: started, error: startError } = await supabase.rpc(
+        'start_tournament_match',
+        {
+          p_match_id: matchId,
+          p_tournament_id: tournamentId
+        }
+      );
+
+      if (startError || started !== true) {
+        console.error(
+          'Match start failed:',
+          startError?.message
+        );
+
+        return res.status(409).json({
+          error: 'Could not start match. Check that both players submitted their teams.'
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Match started and teams locked'
+      });
+    }
+
+    // ==========================================
     // GUARDAR EQUIPO
     // ==========================================
 
