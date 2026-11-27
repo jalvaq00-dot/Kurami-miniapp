@@ -110,6 +110,9 @@ const [tournamentsStatus, setTournamentsStatus] = useState('idle');
 const [tournamentsError, setTournamentsError] = useState('');
   const [myRegistrations, setMyRegistrations] = useState([]);
 const [registeringTournament, setRegisteringTournament] = useState('');
+  const [generatingDraw, setGeneratingDraw] = useState(null);
+const [drawMessage, setDrawMessage] = useState('');
+const [drawError, setDrawError] = useState('');
 const [registrationMessage, setRegistrationMessage] = useState('');
 
 const [selectedTournament, setSelectedTournament] = useState(null);
