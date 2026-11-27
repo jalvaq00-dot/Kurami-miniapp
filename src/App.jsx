@@ -126,7 +126,13 @@ const [tournamentForm, setTournamentForm] = useState({
   starts_at: '',
   registration_opens_at: '',
   registration_closes_at: '',
-  max_participants: ''
+  max_participants: '',
+
+  // Configuración de enfrentamientos
+  pairing_system: 'league',
+  league_legs: 1,
+  swiss_rounds_mode: 'auto',
+  swiss_rounds: 3
 });
 const [creatingTournament, setCreatingTournament] = useState(false);
 const [createTournamentError, setCreateTournamentError] = useState('');
